@@ -1,13 +1,32 @@
 ---
 import Document from "../layouts/Document.astro";
+import Badge from "@/components/Badge.astro";
 ---
 
 <Document>
-  <h1 class="text-3xl font-bold text-bold">Welcome</h1>
+  <section class="max-w-3xl mx-auto px-2 py-10">
+    <h1 class="text-5xl lg:text-6xl font-bold text-bold">
+      Hello, I'm Jeshua
 
-  <p class="text-justify">
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium omnis
-    tempora vitae aliquam aliquid. Cum voluptates quae inventore repudiandae eos
-    a quia eum. Porro excepturi ducimus rerum vitae vel! Repellendus.
-  </p>
+      <a
+				target="_blank"
+        rel="noopener"
+        href="https://www.linkedin.com/in/jeshua-hinostroza/"
+      >
+        <Badge class="align-middle">Ready to work ;)</Badge>
+      </a>
+    </h1>
+
+    <h2 class="text-3xl lg:text-4xl font-bold">
+      +2 years experience. Developer for the web.
+    </h2>
+
+    <p class="text-justify mt-6">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium omnis
+      tempora vitae aliquam aliquid. Cum voluptates quae inventore repudiandae
+      eos a quia eum. Porro excepturi ducimus rerum vitae vel! Repellendus.
+    </p>
+  </section>
+
+  <div class="h-full"></div>
 </Document>
