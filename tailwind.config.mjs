@@ -8,7 +8,10 @@ export default {
         primary: "var(--primary-color)",
 
         bold: "var(--bold-color)",
-        soft: "var(--soft-color)",
+        soft: {
+          DEFAULT: "var(--soft-color)",
+					light: "var(--soft-color-light)",
+        },
       },
     },
   },
