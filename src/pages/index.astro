@@ -4,6 +4,31 @@ import Badge from "@/components/Badge.astro";
 import ContactPill from "@/components/ContactPill.astro";
 import ContactInfo from "@/components/ContactInfo.astro";
 import Link from "@/components/Link.astro";
+
+import TimelineList from "@/components/timeline/TimelineList.astro";
+import TimelineItem from "@/components/timeline/TimelineItem.astro";
+import TimelineItemTitle from "@/components/timeline/TimelineItemTitle.astro";
+import TimeRange from "@/components/timeline/TimeRange.astro";
+
+const company = {
+  name: "ATIRPAY Solutions",
+  url: "https://atirpay.com",
+};
+
+const timeline = [
+  {
+    jobTitle: "FullStack Jr. Developer",
+    company,
+    description: `Served as the lead developer for both backend and frontend of multiple highly interactive applications. Effectively managed timelines and personnel, organizing tasks efficiently to significantly enhance productivity.`,
+    time: "March 2023 - Present",
+  },
+  {
+    jobTitle: "Angular Jr. Developer",
+    company,
+    description: `Developed new features and implemented modifications to existing ones. Identified and resolved performance issues. Took initiative to standardize critical elements of the main application, including forms, paginated tables, loading states, and error reporting. Achieved significant enhancements in user experience. Successfully created several client-only web applications from scratch`,
+    time: "September 2022",
+  },
+];
 ---
 
 <Document>
@@ -64,10 +89,35 @@ import Link from "@/components/Link.astro";
     </ul>
   </section>
 
-  <div class="flex justify-center gap-x-4 items-end h-96">
-    <Link href="#"> Projects </Link>
-    <Link href="#"> Experience </Link>
+  <div class="flex justify-center gap-x-4 items-end h-96 mb-24 text-xl">
+    <Link href="#projects"> Projects </Link>
+    <Link href="#experience"> Experience </Link>
   </div>
 
-  <div class="flex justify-center gap-x-4 items-end h-96"></div>
+  <section id="experience" class="bg-gray-800 px-4 py-12">
+    <div class="container mx-auto">
+      <h2 class="text-bold font-medium text-4xl mb-6">Laboral Experience</h2>
+
+      <TimelineList>
+        {
+          timeline.map((item) => (
+            <TimelineItem>
+              <TimeRange time={item.time} />
+
+              <TimelineItemTitle>
+                <span class="text-cyan-400">{item.jobTitle}</span>
+
+                <span class="">&#8226;</span>
+
+                <a target="_blank" href={item.company.url}>{item.company.name}</a>
+              </TimelineItemTitle>
+
+              <p class="mb-4 text-base font-normal">{item.description}</p>
+            </TimelineItem>
+          ))
+        }
+      </TimelineList>
+    </div>
+  </section>
+  <section id="projects"></section>
 </Document>

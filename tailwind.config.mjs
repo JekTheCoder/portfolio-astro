@@ -11,6 +11,7 @@ export default {
         soft: {
           DEFAULT: "var(--soft-color)",
 					light: "var(--soft-color-light)",
+					dark: "var(--soft-color-dark)",
         },
       },
     },
