@@ -5,6 +5,8 @@ import ContactPill from "@/components/ContactPill.astro";
 import ContactInfo from "@/components/ContactInfo.astro";
 import Link from "@/components/Link.astro";
 
+import Experience from "@/components/Experience.astro";
+
 import TimelineList from "@/components/timeline/TimelineList.astro";
 import TimelineItem from "@/components/timeline/TimelineItem.astro";
 import TimelineItemTitle from "@/components/timeline/TimelineItemTitle.astro";
@@ -109,7 +111,9 @@ const timeline = [
 
                 <span class="">&#8226;</span>
 
-                <a target="_blank" href={item.company.url}>{item.company.name}</a>
+                <a target="_blank" href={item.company.url}>
+                  {item.company.name}
+                </a>
               </TimelineItemTitle>
 
               <p class="mb-4 text-base font-normal">{item.description}</p>
@@ -119,5 +123,10 @@ const timeline = [
       </TimelineList>
     </div>
   </section>
-  <section id="projects"></section>
+
+  <section id="projects" class="max-w-3xl lg:container mx-auto my-5">
+    <h2 class="text-bold font-medium text-4xl mb-6">Projects</h2>
+
+		<Experience />
+  </section>
 </Document>

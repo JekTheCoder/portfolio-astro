@@ -1,0 +1,86 @@
+---
+import BentoBox from "./BentoBox.astro";
+---
+
+<script>
+  /*
+- cco: rust,
+- blog: rust, svelte
+- spotify demo: astro,
+- term-chess: astro1
+- catstagram: svelte
+*/
+</script>
+
+<div class="grid gap-2 bento-layout h-[600px]">
+  <BentoBox class="[grid-area:stopify]">Stopify ;)</BentoBox>
+  <BentoBox class="[grid-area:cco]">Code Conjurer</BentoBox>
+  <BentoBox class="[grid-area:term-chess]">term chess</BentoBox>
+  <BentoBox class="[grid-area:catstagram]">
+    <div class="grid grid-rows-[auto_minmax(0,1fr)]">
+      <div class="header">
+        <h3 class="text-xl font-medium">Catstagram</h3>
+      </div>
+
+      <picture class="block overflow-hidden">
+        <img
+          class="group-hover:scale-110 transition-all duration-300"
+          src="/catstagram.PNG"
+          alt="Catstagram"
+        />
+      </picture>
+    </div>
+  </BentoBox>
+
+  <BentoBox class="[grid-area:blog]">
+    <div class="grid grid-rows-[auto_1fr]">
+      <div class="header">
+        <h3 class="text-xl font-medium">My personal Blog</h3>
+
+        <ul class="flex gap-x-1">
+          <li>Svelte</li>
+          <li>Rust</li>
+        </ul>
+      </div>
+
+      <picture class="block overflow-hidden">
+        <img
+          class="group-hover:scale-110 transition-all duration-300"
+          src="/blog-preview.png"
+          alt="Blog"
+        />
+      </picture>
+    </div>
+  </BentoBox>
+</div>
+
+<style>
+  .header {
+    @apply text-left p-2 mb-px shadow-[0_3px_10px_rgb(0,0,0,0.2)];
+  }
+
+  img {
+    @apply w-full h-full object-cover;
+  }
+
+  .bento-layout {
+    grid-template-areas:
+      "stopify stopify stopify stopify stopify stopify catstagram catstagram catstagram catstagram"
+      "blog blog blog blog blog cco cco cco cco cco"
+      "blog blog blog blog blog term-chess term-chess term-chess term-chess term-chess";
+
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: 3fr 1fr 1fr;
+  }
+
+  @screen lg {
+    .bento-layout {
+      grid-template-areas:
+        "stopify stopify term-chess cco catstagram"
+        "stopify stopify blog blog catstagram";
+
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: 1fr 1fr;
+    }
+  }
+</style>
