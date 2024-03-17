@@ -1,5 +1,6 @@
 ---
 import BentoBox from "./BentoBox.astro";
+import ProjectButton from "./ProjectButton.tsx";
 ---
 
 <script>
@@ -16,21 +17,27 @@ import BentoBox from "./BentoBox.astro";
   <BentoBox class="[grid-area:stopify]">Stopify ;)</BentoBox>
   <BentoBox class="[grid-area:cco]">Code Conjurer</BentoBox>
   <BentoBox class="[grid-area:term-chess]">term chess</BentoBox>
-  <BentoBox class="[grid-area:catstagram]">
-    <div class="grid grid-rows-[auto_minmax(0,1fr)]">
-      <div class="header">
-        <h3 class="text-xl font-medium">Catstagram</h3>
-      </div>
 
-      <picture class="block overflow-hidden">
-        <img
-          class="group-hover:scale-110 transition-all duration-300"
-          src="/catstagram.PNG"
-          alt="Catstagram"
-        />
-      </picture>
-    </div>
-  </BentoBox>
+  <div class="[grid-area:catstagram]">
+    <ProjectButton client:load projectId="catstagram">
+      <BentoBox>
+        <div class="grid grid-rows-[auto_minmax(0,1fr)]">
+          <div class="header">
+            <h3 class="text-xl font-medium">Catstagram</h3>
+          </div>
+
+          <picture class="block overflow-hidden">
+            <img
+							id="catstagram"
+              class="group-hover:scale-110 transition-all duration-300"
+              src="/catstagram.PNG"
+              alt="Catstagram"
+            />
+          </picture>
+        </div>
+      </BentoBox>
+    </ProjectButton>
+  </div>
 
   <BentoBox class="[grid-area:blog]">
     <div class="grid grid-rows-[auto_1fr]">
