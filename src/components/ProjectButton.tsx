@@ -62,6 +62,7 @@ const enum OpenStage {
   Opening,
   Opened,
   Closing,
+  Closed,
 }
 
 type OpenState =
@@ -74,6 +75,9 @@ type OpenState =
     }
   | {
       stage: OpenStage.Closing;
+    }
+  | {
+      stage: OpenStage.Closed;
     };
 
 function ProjectDialog({
@@ -85,7 +89,6 @@ function ProjectDialog({
 }) {
   let container: HTMLDivElement;
   let dialog: HTMLDialogElement;
-  let picture: HTMLElement;
   let body: HTMLElement;
 
   const onClick = (e: Event) => {
@@ -95,34 +98,44 @@ function ProjectDialog({
   };
 
   const [openStage, setOpenStage] = createSignal<OpenState>({
-    stage: OpenStage.Closing,
+    stage: OpenStage.Closed,
   });
 
   const classes = createMemo(() => {
+    const openState = openStage();
+
+    if (!element()) return {};
+
     const image = element().querySelector("#catstagram");
     const imageRect = image!.getBoundingClientRect();
-    const dialogRect = dialog.getBoundingClientRect();
-
-    const openState = openStage();
+    let dialogRect: DOMRect;
 
     switch (openState.stage) {
       case OpenStage.Opening:
+        dialogRect = dialog.getBoundingClientRect();
         return {
           dialogStyle: `transform: translate(${-(dialogRect.left - imageRect.left)}px, ${imageRect.top - dialogRect.top}px)`,
+          pictureStyle: `width: ${imageRect.width}px; height: ${imageRect.height}px`,
           bodyStyle: `width: 0px`,
         };
       case OpenStage.Opened:
         return {
-          dialogClass: "transition-all duration-1000",
+          dialogClass: "transition-all duration-200",
+          pictureStyle: `width: ${imageRect.width}px; height: ${imageRect.height}px`,
           bodyStyle: `width: ${openState.bodyRect.width}px`,
         };
       case OpenStage.Closing:
         const bodyRect = body.getBoundingClientRect();
+        dialogRect = dialog.getBoundingClientRect();
         return {
-          dialogClass: "transition-all duration-1000",
+          dialogClass: "transition-all duration-200",
           pictureStyle: `width: ${imageRect.width}px; height: ${imageRect.height}px`,
+          dialogStyle: `transform: translate(${-(dialogRect.left - imageRect.left + bodyRect.width / 2)}px, ${imageRect.top - dialogRect.top}px)`,
           bodyStyle: `width: 0px`,
-          dialogStyle: `translate(${-(dialogRect.left - imageRect.left + bodyRect.width / 2)}px, ${imageRect.top - dialogRect.top}px)`,
+        };
+      case OpenStage.Closed:
+        return {
+          pictureStyle: `width: ${imageRect.width}px; height: ${imageRect.height}px`,
         };
     }
   });
@@ -133,10 +146,10 @@ function ProjectDialog({
 
     if (opened()) {
       dialog.showModal();
+      const bodyRect = body.getBoundingClientRect();
       setOpenStage({
         stage: OpenStage.Opening,
       });
-      const bodyRect = body.getBoundingClientRect();
 
       timeout = setTimeout(() => {
         setOpenStage({
@@ -151,68 +164,11 @@ function ProjectDialog({
       stage: OpenStage.Closing,
     });
     timeout = setTimeout(() => {
+      setOpenStage({
+        stage: OpenStage.Closed,
+      });
       dialog.close();
-    });
-  });
-
-  createEffect(() => {
-    if (opened()) {
-      dialog.showModal();
-
-      const image = element().querySelector("#catstagram");
-      const rect = image!.getBoundingClientRect();
-
-      picture.style.width = `${rect.width}px`;
-      picture.style.height = `${rect.height}px`;
-
-      const dialogRect = dialog.getBoundingClientRect();
-
-      body.style.width = "";
-      body.classList.remove("w-0");
-
-      dialog.classList.remove("transition-all");
-      dialog.classList.remove("duration-1000");
-
-      dialog.style.transform = `translate(${-(dialogRect.left - rect.left)}px, ${rect.top - dialogRect.top}px)`;
-
-      const bodyRect = body.getBoundingClientRect();
-      body.classList.add("w-0");
-
-      setTimeout(() => {
-        dialog.classList.add("transition-all");
-        dialog.classList.add("duration-1000");
-
-        dialog.style.transform = "";
-        body.classList.remove("w-0");
-        body.style.width = `${bodyRect.width}px`;
-      }, 10);
-
-      return;
-    }
-
-    dialog.classList.remove("transition-all");
-    dialog.classList.remove("duration-150");
-
-    const image = element().querySelector("#catstagram");
-    const rect = image!.getBoundingClientRect();
-
-    picture.style.width = `${rect.width}px`;
-    picture.style.height = `${rect.height}px`;
-
-    const dialogRect = dialog.getBoundingClientRect();
-
-    const bodyRect = body.getBoundingClientRect();
-
-    body.style.width = "";
-    body.classList.add("w-0");
-
-    dialog.classList.add("transition-all");
-    dialog.classList.add("duration-150");
-    dialog.style.transform = `translate(${-(dialogRect.left - rect.left + bodyRect.width / 2)}px, ${rect.top - dialogRect.top}px)`;
-
-    setTimeout(() => {
-      dialog.close();
-    }, 150);
+    }, 200);
   });
 
   return (
@@ -224,14 +180,14 @@ function ProjectDialog({
     >
       <div ref={(e) => (container = e)}>
         <div class="grid grid-cols-[auto_1fr] grid-rows-[minmax(0,1fr)]">
-          <picture ref={(e) => (picture = e)} class={}>
+          <picture style={classes().pictureStyle}>
             <img class="h-full" src="/catstagram.PNG" alt="Catstagram" />
           </picture>
 
           <div
-            class="overflow-hidden transition-all duration-150"
+            class="overflow-hidden transition-all duration-200"
             ref={(e) => (body = e)}
-						style={classes().bodyStyle}
+            style={classes().bodyStyle}
           >
             <div class="p-4">
               <h3>Catstagram</h3>
