@@ -5,12 +5,12 @@ import {
   onCleanup,
   type Accessor,
   type JSX,
-  type Signal,
 } from "solid-js";
 
 const enum OpenStage {
   Opening,
   Opened,
+  PreClosing,
   Closing,
   Closed,
 }
@@ -22,6 +22,10 @@ type OpenState =
   | {
       stage: OpenStage.Opened;
       bodyRect: DOMRect;
+      pictureRect: DOMRect;
+    }
+  | {
+      stage: OpenStage.PreClosing;
     }
   | {
       stage: OpenStage.Closing;
@@ -31,12 +35,14 @@ type OpenState =
     };
 
 export default function EmergentDialog({
-  opened: [opened, setOpened],
+  opened,
   image,
   children,
-	fromImage,
+  fromImage,
+  onClose,
 }: {
-  opened: Signal<boolean>;
+  onClose: () => void;
+  opened: Accessor<boolean>;
   image: JSX.Element;
   children: JSX.Element;
   fromImage: Accessor<Element | null | undefined>;
@@ -44,10 +50,11 @@ export default function EmergentDialog({
   let container: HTMLDivElement;
   let dialog: HTMLDialogElement;
   let body: HTMLElement;
+  let picture: Element;
 
   const onClick = (e: Event) => {
     if (!container.contains(e.target as Node)) {
-      setOpened(false);
+      onClose();
     }
   };
 
@@ -57,82 +64,109 @@ export default function EmergentDialog({
 
   let imageRect: DOMRect;
 
+  const computeDialogOverlay = () => {
+    const dialogRect = dialog.getBoundingClientRect();
+    const targetX = computeTargetAxis(
+      dialogRect.width,
+      dialogRect.x,
+      imageRect.width,
+    );
+
+    const targetY = computeTargetAxis(
+      dialogRect.height,
+      dialogRect.y,
+      imageRect.height,
+    );
+
+    return `transform: translate(${imageRect.x - targetX}px, ${imageRect.top - targetY}px)`;
+  };
   const classes = createMemo(() => {
     const openState = openStage();
 
     if (!imageRect) return {};
-    let dialogRect: DOMRect;
 
     switch (openState.stage) {
-      case OpenStage.Opening:
-        dialogRect = dialog.getBoundingClientRect();
+      case OpenStage.Opening: {
         return {
-          dialogStyle: `transform: translate(${-(dialogRect.left - imageRect.left)}px, ${imageRect.top - dialogRect.top}px)`,
+          dialogStyle: computeDialogOverlay(),
           pictureStyle: `width: ${imageRect.width}px; height: ${imageRect.height}px`,
+          pictureClass: "transition-all duration-200",
           bodyStyle: `width: 0px`,
         };
+      }
       case OpenStage.Opened:
         return {
           dialogClass: "transition-all duration-200",
-          pictureStyle: `width: ${imageRect.width}px; height: ${imageRect.height}px`,
+          pictureStyle: `width: auto; height: 9999px`,
           bodyStyle: `width: ${openState.bodyRect.width}px`,
         };
-      case OpenStage.Closing:
-        const bodyRect = body.getBoundingClientRect();
-        dialogRect = dialog.getBoundingClientRect();
+      case OpenStage.PreClosing: {
+        const pictureRect = picture.getBoundingClientRect();
+        return {
+          pictureStyle: `width: ${pictureRect.width}px; height: ${pictureRect.height}px`,
+        };
+      }
+      case OpenStage.Closing: {
         return {
           dialogClass: "transition-all duration-200",
-          pictureStyle: `width: ${imageRect.width}px; height: ${imageRect.height}px`,
-          dialogStyle: `transform: translate(${-(dialogRect.left - imageRect.left + bodyRect.width / 2)}px, ${imageRect.top - dialogRect.top}px)`,
+          pictureClass: "transition-all duration-200",
+          pictureStyle: `width: ${imageRect.width}px; height: ${imageRect.height}px; `,
+          dialogStyle: computeDialogOverlay(),
           bodyStyle: `width: 0px`,
         };
+      }
       case OpenStage.Closed:
-        return {
-          pictureStyle: `width: ${imageRect.width}px; height: ${imageRect.height}px`,
-        };
+        return {};
     }
   });
 
-  const imageSize = () => {
+  createEffect(() => {
     opened();
 
     const image = fromImage();
-    if (!image) return "";
+    if (!image) return;
 
     imageRect = image!.getBoundingClientRect();
+  });
 
-    return `width: ${imageRect.width}px; height: ${imageRect.height}px`;
-  };
-
-  let timeout: ReturnType<typeof setTimeout>;
   createEffect(() => {
-    onCleanup(() => clearTimeout(timeout));
-
     if (opened()) {
       dialog.showModal();
+
       const bodyRect = body.getBoundingClientRect();
+      const pictureRect = picture.getBoundingClientRect();
+
       setOpenStage({
         stage: OpenStage.Opening,
       });
 
-      timeout = setTimeout(() => {
+      createTimeout(() => {
         setOpenStage({
           stage: OpenStage.Opened,
           bodyRect,
+          pictureRect,
         });
       }, 100);
+
       return;
     }
 
     setOpenStage({
-      stage: OpenStage.Closing,
+      stage: OpenStage.PreClosing,
     });
-    timeout = setTimeout(() => {
+
+    createTimeout(() => {
+      setOpenStage({
+        stage: OpenStage.Closing,
+      });
+    }, 0);
+
+		createTimeout(() => {
       setOpenStage({
         stage: OpenStage.Closed,
       });
       dialog.close();
-    }, 200);
+		}, 200);
   });
 
   return (
@@ -142,21 +176,34 @@ export default function EmergentDialog({
       class={`fixed inset-0 bg-gray-800 rounded-lg overflow-hidden backdrop:bg-black/50 backdrop:backdrop-blur-md ${classes().dialogClass ?? ""}`}
       style={classes().dialogStyle}
     >
-      <div ref={(e) => (container = e)}>
-        <div class="grid grid-cols-[auto_1fr] grid-rows-[minmax(0,1fr)]">
-          <picture style={imageSize()} class="[&>*]:h-full [&>*]:w-full">
-            {image}
-          </picture>
+      <div ref={(e) => (container = e)} class="flex">
+        <picture
+          style={classes().pictureStyle}
+          ref={(e) => (picture = e)}
+          class={`[&>*]:h-full [&>*]:w-full [&>*]:object-cover max-h-96 ${classes().pictureClass ?? ""}`}
+        >
+          {image}
+        </picture>
 
-          <div
-            class="overflow-hidden transition-all duration-200"
-            ref={(e) => (body = e)}
-            style={classes().bodyStyle}
-          >
-            <div class="p-4">{children}</div>
-          </div>
+        <div
+          class="transition-all duration-200"
+          ref={(e) => (body = e)}
+          style={classes().bodyStyle}
+        >
+          <div class="p-4">{children}</div>
         </div>
       </div>
     </dialog>
   );
 }
+
+function createTimeout(callback: () => void, ms?: number) {
+  const timeout = setTimeout(callback, ms);
+  onCleanup(() => clearTimeout(timeout));
+}
+
+const computeTargetAxis = (
+  currentWidth: number,
+  currentX: number,
+  targetWidth: number,
+) => (currentWidth - targetWidth) / 2 + currentX;

@@ -1,6 +1,7 @@
 ---
 import BentoBox from "./BentoBox.astro";
 import ProjectButton from "./ProjectButton.tsx";
+import ProjectDialogs from "./ProjectDialogs.tsx";
 ---
 
 <script>
@@ -13,14 +14,14 @@ import ProjectButton from "./ProjectButton.tsx";
 */
 </script>
 
-<div class="grid gap-2 bento-layout h-[600px]">
+<div class="grid gap-2 bento-layout lg:h-[600px]">
   <BentoBox class="[grid-area:stopify]">Stopify ;)</BentoBox>
   <BentoBox class="[grid-area:cco]">Code Conjurer</BentoBox>
   <BentoBox class="[grid-area:term-chess]">term chess</BentoBox>
 
-  <div class="[grid-area:catstagram]">
+  <div class="[grid-area:catstagram] grid">
     <ProjectButton client:load projectId="catstagram">
-      <BentoBox>
+      <BentoBox class="w-full h-full">
         <div class="grid grid-rows-[auto_minmax(0,1fr)]">
           <div class="header">
             <h3 class="text-xl font-medium">Catstagram</h3>
@@ -28,7 +29,7 @@ import ProjectButton from "./ProjectButton.tsx";
 
           <picture class="block overflow-hidden">
             <img
-							id="catstagram"
+              id="catstagram"
               class="group-hover:scale-110 transition-all duration-300"
               src="/catstagram.PNG"
               alt="Catstagram"
@@ -39,27 +40,36 @@ import ProjectButton from "./ProjectButton.tsx";
     </ProjectButton>
   </div>
 
-  <BentoBox class="[grid-area:blog]">
-    <div class="grid grid-rows-[auto_1fr]">
-      <div class="header">
-        <h3 class="text-xl font-medium">My personal Blog</h3>
+  <div class="[grid-area:blog] grid">
+    <ProjectButton client:load projectId="blog">
+      <BentoBox class="w-full h-full">
+        <div class="grid grid-rows-[auto_minmax(0,1fr)]">
+          <div class="header">
+            <h3 class="text-xl font-medium">My personal Blog</h3>
 
-        <ul class="flex gap-x-1">
-          <li>Svelte</li>
-          <li>Rust</li>
-        </ul>
-      </div>
+            <ul class="flex gap-x-1">
+              <li>Svelte</li>
+              <li>Rust</li>
+            </ul>
+          </div>
 
-      <picture class="block overflow-hidden">
-        <img
-          class="group-hover:scale-110 transition-all duration-300"
-          src="/blog-preview.png"
-          alt="Blog"
-        />
-      </picture>
-    </div>
-  </BentoBox>
+          <picture class="block overflow-hidden">
+            <img
+              id="blog"
+              class="group-hover:scale-110 transition-all duration-300"
+              src="/blog-preview.png"
+              alt="Blog"
+            />
+          </picture>
+        </div>
+      </BentoBox>
+    </ProjectButton>
+  </div>
+
+  <div class="hidden lg:block bg-gray-800 rounded-lg [grid-area:none]"></div>
 </div>
+
+<ProjectDialogs client:load />
 
 <style>
   .header {
@@ -77,17 +87,17 @@ import ProjectButton from "./ProjectButton.tsx";
       "blog blog blog blog blog term-chess term-chess term-chess term-chess term-chess";
 
     grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: 3fr 1fr 1fr;
+    grid-template-rows: 2fr 1fr 1fr;
   }
 
   @screen lg {
     .bento-layout {
       grid-template-areas:
         "stopify stopify term-chess cco catstagram"
-        "stopify stopify blog blog catstagram";
+        "stopify stopify blog blog none";
 
       grid-template-columns: repeat(5, 1fr);
-      grid-template-rows: 1fr 1fr;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
     }
   }
 </style>

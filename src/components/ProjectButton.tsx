@@ -1,5 +1,5 @@
 import { createSignal, onMount } from "solid-js";
-import EmergentDialog from "./EmergentDialog";
+import { setProjectDialog } from "@/lib/state/project-dialog";
 
 function createMounted() {
   const [mounted, setMounted] = createSignal(false);
@@ -18,38 +18,39 @@ export default function ProjectButton({
   projectId: string;
 }) {
   let button: HTMLElement;
-
   const mounted = createMounted();
-  const openedSignal = createSignal(false);
+	let image: HTMLImageElement | undefined;
+
+	onMount(() => {
+		image = button.querySelector("#"+projectId) as HTMLImageElement
+	})
 
   const openDialog = () => {
-    const [_, setOpened] = openedSignal;
-    setOpened(true);
+		if (!image) return;
+
+		const currentImage = image;
+
+    setProjectDialog(() => ({
+      id: projectId,
+			image: currentImage,
+    }));
   };
 
   return (
     <>
       <a
         href={`/projects#${projectId}`}
-        class={!mounted() ? "block" : "hidden"}
+        class={`${!mounted() ? "block" : "hidden"} min-h-0`}
       >
         {children}
       </a>
       <button
         ref={(e) => (button = e)}
         onClick={openDialog}
-        class={mounted() ? "block" : "hidden"}
+        class={`${mounted() ? "block" : "hidden"} min-h-0`}
       >
         {children}
       </button>
-
-      <EmergentDialog
-        opened={openedSignal}
-        fromImage={() => button?.querySelector("#" + projectId)}
-        image={<img src="/catstagram.PNG" alt="catstagram" />}
-      >
-        adawd
-      </EmergentDialog>
     </>
   );
 }
