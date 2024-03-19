@@ -26,7 +26,7 @@ import { PROJECTS } from "@/lib/const/projects";
               <div class="header mb-5">
                 <h3 class="text-xl font-medium mb-2">{project.name}</h3>
 
-                <ul class="flex gap-x-2">
+                <ul class="flex flex-wrap gap-2">
                   {project.technologies.map((tech) => (
                     <li>
                       <TechMark tech={tech} />
@@ -35,12 +35,24 @@ import { PROJECTS } from "@/lib/const/projects";
                 </ul>
               </div>
               <picture class="block overflow-hidden">
-                <img
-                  id={project.id}
-                  class="group-hover:scale-110 transition-all duration-300"
-                  src={project.image}
-                  alt={`Preview image of ${project.name}`}
-                />
+                {project.image && (
+                  <img
+                    id={project.id}
+                    class="group-hover:scale-110 transition-all duration-300"
+                    src={project.image}
+                    alt={`Preview image of ${project.name}`}
+                  />
+                )}
+                {project.video && (
+                  <video
+                    id={project.id}
+                    class="group-hover:scale-110 transition-all duration-300"
+                    src={project.video}
+                    autoplay
+                    muted
+                    loop
+                  />
+                )}
               </picture>
             </div>
           </BentoBox>

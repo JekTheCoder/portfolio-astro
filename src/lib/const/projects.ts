@@ -36,7 +36,7 @@ export const PROJECTS = [
   {
     id: "term-chess",
     name: "TermChess",
-    image: "/termchess.png",
+    video: "/term-chess.webm",
     description: "TermChess RS",
     technologies: ['rust'],
   },
@@ -44,7 +44,7 @@ export const PROJECTS = [
   {
     id: "cco",
     name: "Code Conjurer",
-    image: "/cco.png",
+    video: "/cco.webm",
     description: "Code Conjurer",
     technologies: ['rust'],
   },

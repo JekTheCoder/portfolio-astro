@@ -29,7 +29,26 @@ export default function ProjectDialogs() {
       {PROJECTS.map((p) => (
         <EmergentDialog
           onClose={closeDialog}
-          image={<img src={p.image} alt={p.name} />}
+          image={
+            <>
+              {p.image && (
+                <img
+                  id={p.id}
+                  src={p.image}
+                  alt={`Preview image of ${p.name}`}
+                />
+              )}
+              {p.video && (
+                <video
+                  id={p.id}
+                  src={p.video}
+                  autoplay
+                  muted
+                  loop
+                />
+              )}
+            </>
+          }
           fromImage={() => opened()?.lastImage}
           opened={() => opened()?.id === p.id}
         >
