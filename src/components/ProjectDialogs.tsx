@@ -1,6 +1,7 @@
 import { projectDialog, setProjectDialog } from "@/lib/state/project-dialog";
 import EmergentDialog from "./EmergentDialog";
 import { createEffect, createSignal } from "solid-js";
+import { PROJECTS } from "@/lib/const/projects";
 
 export default function ProjectDialogs() {
   const closeDialog = () => setProjectDialog(null);
@@ -25,24 +26,16 @@ export default function ProjectDialogs() {
 
   return (
     <>
-      <EmergentDialog
-        onClose={closeDialog}
-        image={<img src="/catstagram.PNG" alt="catstagram" />}
-        fromImage={() => opened()?.lastImage}
-        opened={() => opened()?.id === "catstagram"}
-      >
-        <h3>Catstagram</h3>
-
-      </EmergentDialog>
-
-      <EmergentDialog
-        onClose={closeDialog}
-        image={<img src="/blog-preview.png" alt="blog" />}
-        fromImage={() => opened()?.lastImage}
-        opened={() => opened()?.id === "blog"}
-      >
-        <h3>Blog!</h3>
-      </EmergentDialog>
+      {PROJECTS.map((p) => (
+        <EmergentDialog
+          onClose={closeDialog}
+          image={<img src={p.image} alt={p.name} />}
+          fromImage={() => opened()?.lastImage}
+          opened={() => opened()?.id === p.id}
+        >
+          <h3>{p.name}</h3>
+        </EmergentDialog>
+      ))}
     </>
   );
 }
