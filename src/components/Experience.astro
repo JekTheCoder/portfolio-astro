@@ -19,7 +19,7 @@ import { PROJECTS } from "@/lib/const/projects";
   {
     PROJECTS.map((project) => (
       <li style={`grid-area: ${project.id}`} class="grid">
-        <ProjectButton client:load projectId={project.id}>
+        <ProjectButton projectId={project.id}>
           <BentoBox class="w-full h-full">
             {" "}
             <div class="grid grid-rows-[auto_minmax(0,1fr)]">
