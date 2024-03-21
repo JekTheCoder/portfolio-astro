@@ -1,0 +1,29 @@
+---
+import { PROJECTS } from "@/lib/const/projects";
+import ProjectDialog from "./ProjectDialog.tsx";
+import TechMark from "./TechMark.astro";
+---
+
+{
+  PROJECTS.map((p) => (
+    <ProjectDialog
+      client:load
+      projectId={p.id}
+      image={p.image}
+      video={p.video}
+      name={p.name}
+    >
+      <h3 class="text-2xl text-bold mb-4">{p.name}</h3>
+
+      <ul class="flex flex-wrap gap-1 mb-4">
+        {p.technologies.map((tech) => (
+          <li>
+            <TechMark tech={tech} />
+          </li>
+        ))}
+      </ul>
+
+      <p>{p.description}</p>
+    </ProjectDialog>
+  ))
+}

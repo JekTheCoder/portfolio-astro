@@ -1,7 +1,7 @@
 ---
 import BentoBox from "./BentoBox.astro";
 import ProjectButton from "./ProjectButton.tsx";
-import ProjectDialogs from "./ProjectDialogs.tsx";
+import ProjectDialogs from "./ProjectDialogs.astro";
 import TechMark from "./TechMark.astro";
 import { PROJECTS } from "@/lib/const/projects";
 ---
@@ -40,7 +40,7 @@ import { PROJECTS } from "@/lib/const/projects";
                     id={project.id}
                     class="group-hover:scale-110 transition-all duration-300"
                     src={project.image}
-                    alt={`Preview image of ${project.name}`}
+                    alt={`Preview of ${project.name}`}
                   />
                 )}
                 {project.video && (
@@ -64,7 +64,7 @@ import { PROJECTS } from "@/lib/const/projects";
   <li class="hidden lg:block bg-gray-900 rounded-lg [grid-area:none] m-1"></li>
 </ul>
 
-<ProjectDialogs client:load />
+<ProjectDialogs />
 
 <style>
   .header {
