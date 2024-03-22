@@ -5,11 +5,6 @@ export const PROJECTS = [
     image: "/catstagram.png",
     description: "A social media app for cats.",
     technologies: ["svelte"],
-
-    ui: {
-      containerClass: "flex",
-      pictureClass: "",
-    },
   },
 
   {
@@ -18,11 +13,6 @@ export const PROJECTS = [
     image: "/blog-preview.png",
     description: "My personal blog",
     technologies: ["rust", "svelte", "tailwind"],
-
-    ui: {
-      containerClass: "flex",
-      pictureClass: "",
-    },
   },
 
   {

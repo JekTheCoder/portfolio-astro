@@ -4,17 +4,25 @@ import ProjectButton from "./ProjectButton.tsx";
 import ProjectDialogs from "./ProjectDialogs.astro";
 import TechMark from "./TechMark.astro";
 import { PROJECTS } from "@/lib/const/projects";
----
 
-<script>
-  /*
-- cco: rust,
-- blog: rust, svelte
-- spotify demo: astro,
-- term-chess: astro1
-- catstagram: svelte
-*/
-</script>
+const stylesClass: Record<string, { containerClass: string }> = {
+  stopify: {
+    containerClass: "flex-col-reverse",
+  },
+  cco: {
+    containerClass: "flex-col-reverse",
+  },
+  catstagram: {
+    containerClass: "flex-col",
+  },
+  "term-chess": {
+    containerClass: "flex-col-reverse",
+  },
+  blog: {
+    containerClass: "flex-col",
+  },
+};
+---
 
 <ul class="grid gap-2 bento-layout lg:h-[600px]">
   {
@@ -22,7 +30,7 @@ import { PROJECTS } from "@/lib/const/projects";
       <li style={`grid-area: ${project.id}`} class="grid">
         <ProjectButton client:load projectId={project.id}>
           <BentoBox class="w-full h-full">
-            <div class="grid grid-rows-[auto_minmax(0,1fr)]">
+            <div class={`flex ${stylesClass[project.id]?.containerClass}`}>
               <div class="header mb-5">
                 <h3 class="text-xl font-medium mb-2">{project.name}</h3>
 
@@ -34,7 +42,7 @@ import { PROJECTS } from "@/lib/const/projects";
                   ))}
                 </ul>
               </div>
-              <picture class="block overflow-hidden">
+              <picture class="block overflow-hidden flex-1">
                 {project.image && (
                   <img
                     id={project.id}
@@ -71,7 +79,7 @@ import { PROJECTS } from "@/lib/const/projects";
     @apply text-left p-2 mb-px shadow-[0_3px_10px_rgb(0,0,0,0.2)];
   }
 
-  img {
+  img, video {
     @apply w-full h-full object-cover;
   }
 
@@ -89,7 +97,7 @@ import { PROJECTS } from "@/lib/const/projects";
     .bento-layout {
       grid-template-areas:
         "stopify stopify term-chess cco catstagram"
-        "stopify stopify blog blog none";
+        "stopify stopify blog blog catstagram";
 
       grid-template-columns: repeat(5, 1fr);
       grid-template-rows: repeat(2, minmax(0, 1fr));
