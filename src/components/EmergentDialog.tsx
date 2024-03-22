@@ -43,12 +43,14 @@ export default function EmergentDialog({
   children,
   fromImage,
   onClose,
+  containerClass,
 }: {
   onClose: () => void;
   opened: Accessor<boolean>;
   image: JSX.Element;
   children: JSX.Element;
   fromImage: Accessor<Element | null | undefined>;
+  containerClass?: string;
 }) {
   let container: HTMLDivElement;
   let dialog: HTMLDialogElement;
@@ -193,7 +195,7 @@ export default function EmergentDialog({
       class={`fixed inset-0 bg-gray-800 rounded-lg overflow-hidden backdrop:bg-black/50 backdrop:backdrop-blur-md ${classes().dialogClass ?? ""}`}
       style={classes().dialogStyle}
     >
-      <div ref={(e) => (container = e)} class="flex">
+      <div ref={(e) => (container = e)} class={containerClass}>
         <picture
           style={classes().pictureStyle}
           ref={(e) => (picture = e)}

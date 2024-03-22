@@ -25,13 +25,15 @@ export default function ProjectDialog({
   image,
   video,
   children,
-	name,
+  name,
+  containerClass,
 }: {
   projectId: string;
   image?: string;
   video?: string;
   children: JSX.Element;
-		name: string
+  name: string;
+  containerClass?: string;
 }) {
   const closeDialog = () => setProjectDialog(null);
 
@@ -48,6 +50,7 @@ export default function ProjectDialog({
       }
       fromImage={() => opened()?.lastImage}
       opened={() => opened()?.id === projectId}
+      containerClass={containerClass}
     >
       {children}
     </EmergentDialog>

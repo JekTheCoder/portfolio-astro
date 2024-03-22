@@ -2,6 +2,24 @@
 import { PROJECTS } from "@/lib/const/projects";
 import ProjectDialog from "./ProjectDialog.tsx";
 import TechMark from "./TechMark.astro";
+
+const stylesClass: Record<string, { containerClass: string }> = {
+	stopify: {
+		containerClass: "flex",
+	},
+	cco: {
+		containerClass: "flex flex-col",
+	},
+	catstagram: {
+		containerClass: "flex flex-row-reverse",
+	},
+	"term-chess": {
+		containerClass: "flex flex-col-reverse",
+	},
+	blog: {
+		containerClass: "flex",
+	},
+}
 ---
 
 {
@@ -12,6 +30,7 @@ import TechMark from "./TechMark.astro";
       image={p.image}
       video={p.video}
       name={p.name}
+			containerClass={stylesClass[p.id]?.containerClass}
     >
       <h3 class="text-2xl text-bold mb-4">{p.name}</h3>
 
