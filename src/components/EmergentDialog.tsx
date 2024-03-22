@@ -108,6 +108,7 @@ export default function EmergentDialog({
           pictureClass: `${transitionClass} max-h-none`,
           pictureStyle: `width: ${openState.pictureRect.width}px; height: ${openState.pictureRect.height}px`,
           bodyStyle: `width: ${openState.bodyRect.width}px`,
+          innerBodyStyle: `width: ${openState.bodyRect.width}px; height: ${openState.bodyRect.height}px`,
         };
       case OpenStage.PreClosing: {
         const pictureRect = picture.getBoundingClientRect();
@@ -205,7 +206,7 @@ export default function EmergentDialog({
         </picture>
 
         <div
-          class="transition-all duration-200 ease-in-out"
+					class={transitionClass}
           ref={(e) => (body = e)}
           style={classes().bodyStyle}
         >
