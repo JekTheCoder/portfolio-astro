@@ -18,6 +18,7 @@ const enum OpenStage {
 type OpenState =
   | {
       stage: OpenStage.Opening;
+      pictureRect: DOMRect;
     }
   | {
       stage: OpenStage.Opened;
@@ -26,9 +27,11 @@ type OpenState =
     }
   | {
       stage: OpenStage.PreClosing;
+      bodyRect: DOMRect;
     }
   | {
       stage: OpenStage.Closing;
+      bodyRect: DOMRect;
     }
   | {
       stage: OpenStage.Closed;
@@ -64,7 +67,7 @@ export default function EmergentDialog({
 
   let imageRect: DOMRect;
 
-  const computeDialogOverlay = () => {
+  const computeDialogPosition = () => {
     const dialogRect = dialog.getBoundingClientRect();
     const targetX = computeTargetAxis(
       dialogRect.width,
@@ -80,6 +83,9 @@ export default function EmergentDialog({
 
     return `transform: translate(${imageRect.x - targetX}px, ${imageRect.top - targetY}px)`;
   };
+
+  const transitionClass = "transition-all duration-200 ease-in-out";
+
   const classes = createMemo(() => {
     const openState = openStage();
 
@@ -88,31 +94,37 @@ export default function EmergentDialog({
     switch (openState.stage) {
       case OpenStage.Opening: {
         return {
-          dialogStyle: computeDialogOverlay(),
+          dialogStyle: computeDialogPosition(),
           pictureStyle: `width: ${imageRect.width}px; height: ${imageRect.height}px`,
-          pictureClass: "transition-all duration-200",
+          pictureClass: `max-h-none`,
           bodyStyle: `width: 0px`,
         };
       }
       case OpenStage.Opened:
         return {
-          dialogClass: "transition-all duration-200",
-          pictureStyle: `width: auto; height: 9999px`,
+          dialogClass: transitionClass,
+          pictureClass: `${transitionClass} max-h-none`,
+          pictureStyle: `width: ${openState.pictureRect.width}px; height: ${openState.pictureRect.height}px`,
           bodyStyle: `width: ${openState.bodyRect.width}px`,
         };
       case OpenStage.PreClosing: {
         const pictureRect = picture.getBoundingClientRect();
         return {
           pictureStyle: `width: ${pictureRect.width}px; height: ${pictureRect.height}px`,
+          bodyStyle: `width: ${openState.bodyRect.width}px; height: ${openState.bodyRect.height}px`,
+          innerBodyStyle: `width: ${openState.bodyRect.width}px; height: ${openState.bodyRect.height}px`,
         };
       }
       case OpenStage.Closing: {
+        const pictureSize = `width: ${imageRect.width}px; height: ${imageRect.height}px;`;
+
         return {
-          dialogClass: "transition-all duration-200",
-          pictureClass: "transition-all duration-200",
-          pictureStyle: `width: ${imageRect.width}px; height: ${imageRect.height}px; `,
-          dialogStyle: computeDialogOverlay(),
-          bodyStyle: `width: 0px`,
+          dialogClass: transitionClass,
+          pictureClass: `${transitionClass} max-h-none`,
+          pictureStyle: pictureSize,
+          dialogStyle: computeDialogPosition(),
+          bodyStyle: `width: 0px; height: 0px;`,
+          innerBodyStyle: `width: ${openState.bodyRect.width}px; height: ${openState.bodyRect.height}px`,
         };
       }
       case OpenStage.Closed:
@@ -138,6 +150,7 @@ export default function EmergentDialog({
 
       setOpenStage({
         stage: OpenStage.Opening,
+        pictureRect,
       });
 
       createTimeout(() => {
@@ -151,22 +164,26 @@ export default function EmergentDialog({
       return;
     }
 
+    const bodyRect = body.getBoundingClientRect();
+
     setOpenStage({
       stage: OpenStage.PreClosing,
+      bodyRect,
     });
 
     createTimeout(() => {
       setOpenStage({
         stage: OpenStage.Closing,
+        bodyRect,
       });
     }, 0);
 
-		createTimeout(() => {
+    createTimeout(() => {
       setOpenStage({
         stage: OpenStage.Closed,
       });
       dialog.close();
-		}, 200);
+    }, 200);
   });
 
   return (
@@ -180,17 +197,19 @@ export default function EmergentDialog({
         <picture
           style={classes().pictureStyle}
           ref={(e) => (picture = e)}
-          class={`[&>*]:h-full [&>*]:w-full [&>*]:object-cover max-h-96 ${classes().pictureClass ?? ""}`}
+          class={`[&>*]:h-full [&>*]:w-full [&>*]:object-cover w-auto h-[9999px] max-h-96 ${classes().pictureClass ?? ""}`}
         >
           {image}
         </picture>
 
         <div
-          class="transition-all duration-200"
+          class="transition-all duration-200 ease-in-out"
           ref={(e) => (body = e)}
           style={classes().bodyStyle}
         >
-          <div class="p-4">{children}</div>
+          <div class="p-4 w-full h-full" style={classes().innerBodyStyle}>
+            {children}
+          </div>
         </div>
       </div>
     </dialog>
