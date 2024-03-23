@@ -1,6 +1,7 @@
 import { projectDialog, setProjectDialog } from "@/lib/state/project-dialog";
 import EmergentDialog, { DialogAxis } from "./EmergentDialog";
 import { type JSX, createEffect, createSignal } from "solid-js";
+import ProjectMedia from "./ProjectMedia";
 
 const [opened, setOpened] = createSignal<
   | {
@@ -43,12 +44,7 @@ export default function ProjectDialog({
     <EmergentDialog
       onClose={closeDialog}
       image={
-        <>
-          {image && (
-            <img id={projectId} src={image} alt={`Preview of ${name}`} />
-          )}
-          {video && <video id={projectId} src={video} autoplay muted loop />}
-        </>
+        <ProjectMedia id={projectId} name={name} image={image} video={video} />
       }
       fromImage={() => opened()?.lastImage}
       opened={() => opened()?.id === projectId}

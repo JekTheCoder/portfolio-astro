@@ -1,23 +1,104 @@
 ---
+import type { ProjectInfo } from "@/lib/const/projects";
+import ExternalLink from "./ExternalLink.astro";
+import ProjectMarkdown from "./ProjectMarkdown.astro";
+import TechMark from "./TechMark.astro";
+
+import * as CatstagramMD from "@/content/projects/catstagram.md";
+import * as BlogMD from "@/content/projects/blog.md";
+import * as TermChessMD from "@/content/projects/term-chess.md";
+import * as CcoMD from "@/content/projects/cco.md";
+import * as StopifyMD from "@/content/projects/stopify.md";
+
+import GithubIcon from "@/public/icons/github.svg?raw";
+import WWWIcon from "@/public/icons/www.svg?raw";
+import Svg from "./Svg.astro";
+
+const props: Record<
+  string,
+  {
+    contentClass?: string;
+    markdown: typeof import("*.md");
+  }
+> = {
+  stopify: {
+    contentClass: "w-80",
+    markdown: StopifyMD,
+  },
+  cco: {
+    contentClass: "w-full",
+    markdown: CcoMD,
+  },
+  catstagram: {
+    contentClass: "w-80",
+    markdown: CatstagramMD,
+  },
+  "term-chess": {
+    contentClass: "w-full",
+    markdown: TermChessMD,
+  },
+  blog: {
+    contentClass: "w-80",
+    markdown: BlogMD,
+  },
+};
+
 interface Props {
-  markdown: typeof import("*.md");
-	class?: string
+  project: ProjectInfo;
 }
 
-const { markdown, class: className } = Astro.props;
-const Content = markdown.Content;
+const { project } = Astro.props;
 ---
 
-<div class={"text-soft project-content" + " " + className}>
-  <Content />
+<h3 class="text-2xl text-bold mb-4">{project.name}</h3>
+
+<ul class="flex flex-wrap gap-1 mb-2">
+  {
+    project.technologies.map((tech) => (
+      <li>
+        <TechMark tech={tech} />
+      </li>
+    ))
+  }
+</ul>
+
+<div class="flex gap-x-2 mb-2">
+  {
+    project.repository && (
+      <ExternalLink href={project.repository}>
+        <div class="w-3 h-3">
+          <Svg svg={GithubIcon} />
+        </div>
+        Repository
+      </ExternalLink>
+    )
+  }
+
+  {
+    project.repositories &&
+      project.repositories.map((repo) => (
+        <ExternalLink href={repo.url}>
+          <div class="w-3 h-3">
+            <Svg svg={GithubIcon} />
+          </div>
+          {repo.label}
+        </ExternalLink>
+      ))
+  }
+
+  {
+    project.website && (
+      <ExternalLink href={project.website}>
+        <div class="w-3 h-3">
+          <Svg svg={WWWIcon} />
+        </div>
+        Website
+      </ExternalLink>
+    )
+  }
 </div>
 
-<style is:global>
-  .project-content ul {
-    @apply list-disc list-inside;
-  }
-
-  .project-content p {
-    @apply mb-2;
-  }
-</style>
+<ProjectMarkdown
+  class={props[project.id]?.contentClass}
+  markdown={props[project.id].markdown}
+/>

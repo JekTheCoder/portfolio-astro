@@ -49,3 +49,5 @@ export const PROJECTS = [
     repository: "https://github.com/JekTheCoder/code-conjurer",
   },
 ];
+
+export type ProjectInfo = typeof PROJECTS[number];

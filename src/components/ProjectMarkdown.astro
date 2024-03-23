@@ -1,0 +1,23 @@
+---
+interface Props {
+  markdown: typeof import("*.md");
+	class?: string
+}
+
+const { markdown, class: className } = Astro.props;
+const Content = markdown.Content;
+---
+
+<div class={"text-soft project-content" + " " + className}>
+  <Content />
+</div>
+
+<style is:global>
+  .project-content ul {
+    @apply list-disc list-inside;
+  }
+
+  .project-content p {
+    @apply mb-2;
+  }
+</style>

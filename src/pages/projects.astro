@@ -1,20 +1,43 @@
 ---
 import Document from "../layouts/Document.astro";
 import { PROJECTS } from "@/lib/const/projects";
+import ProjectContent from "@/components/ProjectContent.astro";
+import ProjectMedia from "@/components/ProjectMedia.tsx";
+
+const props: Record<
+  string,
+  {
+    containerClass: string;
+  }
+> = {
+  stopify: {
+    containerClass: "flex max-h-[36rem]",
+  },
+  cco: {
+    containerClass: "max-w-[36rem]",
+  },
+  catstagram: {
+    containerClass: "flex gap-x-4 flex-row-reverse max-h-[36rem]",
+  },
+  "term-chess": {
+    containerClass: "flex-col-reverse max-w-[36rem]",
+  },
+  blog: {
+    containerClass: "flex max-h-[36rem]",
+  },
+};
 ---
 
 <Document>
-  <div class="container lg:max-w-32 mx-auto grid gap-8">
+  <div class="container mx-auto grid gap-8">
     {
       PROJECTS.map((project) => (
-        <section id={project.id} class="flex justify-between max-h-96">
+        <section id={project.id} class={`${props[project.id]?.containerClass} w-full`}>
           <div class="">
-            <h2 class="text-bold font-medium text-4xl mb-6">{project.name}</h2>
-
-            <p>{project.description}</p>
+            <ProjectContent project={project} />
           </div>
 
-					<img class="h-full w-auto" src={project.image} alt="" />
+          <ProjectMedia {...project} class="h-full w-auto" />
         </section>
       ))
     }
