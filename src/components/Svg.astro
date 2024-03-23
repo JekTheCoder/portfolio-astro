@@ -1,0 +1,10 @@
+---
+import type { ImageMetadata } from 'astro'
+
+interface Props {
+	svg: ImageMetadata;
+}
+
+const { svg } = Astro.props;
+---
+<Fragment set:html={svg} />

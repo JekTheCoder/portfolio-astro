@@ -12,6 +12,10 @@ import * as TermChessMD from "@/content/projects/term-chess.md";
 import * as CcoMD from "@/content/projects/cco.md";
 import * as StopifyMD from "@/content/projects/stopify.md";
 
+import GithubIcon from "@/public/icons/github.svg?raw";
+import WWWIcon from "@/public/icons/www.svg?raw";
+import Svg from "./Svg.astro";
+
 import _, { DialogAxis } from "./EmergentDialog";
 
 const props: Record<
@@ -20,38 +24,38 @@ const props: Record<
     containerClass: string;
     contentClass?: string;
     markdown: typeof import("*.md");
-		dialogAxis: DialogAxis;
+    dialogAxis: DialogAxis;
   }
 > = {
   stopify: {
     containerClass: "flex max-h-[36rem]",
     contentClass: "w-80",
     markdown: StopifyMD,
-		dialogAxis: DialogAxis.Horizontal,
+    dialogAxis: DialogAxis.Horizontal,
   },
   cco: {
     containerClass: "max-w-[36rem]",
     contentClass: "w-full",
     markdown: CcoMD,
-		dialogAxis: DialogAxis.Vertical,
+    dialogAxis: DialogAxis.Vertical,
   },
   catstagram: {
     containerClass: "flex flex-row-reverse max-h-[36rem]",
     contentClass: "w-80",
     markdown: CatstagramMD,
-		dialogAxis: DialogAxis.Horizontal,
+    dialogAxis: DialogAxis.Horizontal,
   },
   "term-chess": {
     containerClass: "flex-col-reverse max-w-[36rem]",
     contentClass: "w-full",
     markdown: TermChessMD,
-		dialogAxis: DialogAxis.Vertical,
+    dialogAxis: DialogAxis.Vertical,
   },
   blog: {
     containerClass: "flex max-h-[36rem]",
     contentClass: "w-80",
     markdown: BlogMD,
-		dialogAxis: DialogAxis.Horizontal,
+    dialogAxis: DialogAxis.Horizontal,
   },
 };
 ---
@@ -65,7 +69,7 @@ const props: Record<
       video={p.video}
       name={p.name}
       containerClass={props[p.id]?.containerClass}
-			dialogAxis={props[p.id]?.dialogAxis}
+      dialogAxis={props[p.id]?.dialogAxis}
     >
       <h3 class="text-2xl text-bold mb-4">{p.name}</h3>
 
@@ -79,15 +83,32 @@ const props: Record<
 
       <div class="flex gap-x-2 mb-2">
         {p.repository && (
-          <ExternalLink href={p.repository}>Repository</ExternalLink>
+          <ExternalLink href={p.repository}>
+            <div class="w-3 h-3">
+              <Svg svg={GithubIcon} />
+            </div>
+            Repository
+          </ExternalLink>
         )}
 
         {p.repositories &&
           p.repositories.map((repo) => (
-            <ExternalLink href={repo.url}>{repo.label}</ExternalLink>
+            <ExternalLink href={repo.url}>
+              <div class="w-3 h-3">
+                <Svg svg={GithubIcon} />
+              </div>
+              {repo.label}
+            </ExternalLink>
           ))}
 
-        {p.website && <ExternalLink href={p.website}>Website</ExternalLink>}
+        {p.website && (
+          <ExternalLink href={p.website}>
+            <div class="w-3 h-3">
+              <Svg svg={WWWIcon} />
+            </div>
+            Website
+          </ExternalLink>
+        )}
       </div>
 
       <ProjectContent
