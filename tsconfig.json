@@ -14,7 +14,10 @@
       ],
       "@/lib/*": [
         "./src/lib/*"
-      ]
+      ],
+			"@/content/*": [
+				"./src/content/*"
+			]
     },
     "jsx": "preserve",
     "jsxImportSource": "solid-js"

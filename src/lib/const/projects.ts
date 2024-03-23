@@ -3,7 +3,7 @@ export const PROJECTS = [
     id: "catstagram",
     name: "Catstagram",
     image: "/catstagram.png",
-    description: "A social media app for cats.",
+    repository: "https://github.com/JekTheCoder/catstagram",
     technologies: ["svelte"],
   },
 
@@ -11,31 +11,41 @@ export const PROJECTS = [
     id: "blog",
     name: "My personal Blog",
     image: "/blog-preview.png",
-    description: "My personal blog",
     technologies: ["rust", "svelte", "tailwind"],
+    website: "https://www.jeshuahinostroza.com/",
+    repositories: [
+      {
+        label: "Server",
+        url: "https://github.com/JekTheCoder/actix-blog",
+      },
+      {
+        label: "Frontend",
+        url: "https://github.com/JekTheCoder/blog-clients",
+      },
+    ],
   },
 
   {
     id: "stopify",
     name: "Stopify ;)",
     image: "/stopify.png",
-    description: "Music player",
-    technologies: ["astro", "tailwind", 'solid'],
+    technologies: ["astro", "tailwind", "solid"],
+    repository: "https://github.com/JekTheCoder/astro-spotify-demo",
   },
 
   {
     id: "term-chess",
     name: "TermChess",
     video: "/term-chess.webm",
-    description: "TermChess RS",
-    technologies: ['rust'],
+    technologies: ["rust"],
+    repository: "https://github.com/JekTheCoder/term-chess-rs",
   },
 
   {
     id: "cco",
     name: "Code Conjurer",
     video: "/cco.webm",
-    description: "Code Conjurer",
-    technologies: ['rust'],
+    technologies: ["rust"],
+    repository: "https://github.com/JekTheCoder/code-conjurer",
   },
 ];

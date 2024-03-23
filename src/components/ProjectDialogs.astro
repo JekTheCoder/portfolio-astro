@@ -2,24 +2,50 @@
 import { PROJECTS } from "@/lib/const/projects";
 import ProjectDialog from "./ProjectDialog.tsx";
 import TechMark from "./TechMark.astro";
+import ProjectContent from "./ProjectContent.astro";
 
-const stylesClass: Record<string, { containerClass: string }> = {
-	stopify: {
-		containerClass: "flex",
-	},
-	cco: {
-		containerClass: "flex flex-col",
-	},
-	catstagram: {
-		containerClass: "flex flex-row-reverse",
-	},
-	"term-chess": {
-		containerClass: "flex flex-col-reverse",
-	},
-	blog: {
-		containerClass: "flex",
-	},
-}
+import ExternalLink from "./ExternalLink.astro";
+
+import * as CatstagramMD from "@/content/projects/catstagram.md";
+import * as BlogMD from "@/content/projects/blog.md";
+import * as TermChessMD from "@/content/projects/term-chess.md";
+import * as CcoMD from "@/content/projects/cco.md";
+import * as StopifyMD from "@/content/projects/stopify.md";
+
+const props: Record<
+  string,
+  {
+    containerClass: string;
+    contentClass?: string;
+    markdown: typeof import("*.md");
+  }
+> = {
+  stopify: {
+    containerClass: "flex",
+    contentClass: "w-80",
+    markdown: StopifyMD,
+  },
+  cco: {
+    containerClass: "flex flex-col",
+    contentClass: "w-full",
+    markdown: CcoMD,
+  },
+  catstagram: {
+    containerClass: "flex flex-row-reverse",
+    contentClass: "w-80",
+    markdown: CatstagramMD,
+  },
+  "term-chess": {
+    containerClass: "flex flex-col-reverse",
+    contentClass: "w-full",
+    markdown: TermChessMD,
+  },
+  blog: {
+    containerClass: "flex",
+    contentClass: "w-80",
+    markdown: BlogMD,
+  },
+};
 ---
 
 {
@@ -30,11 +56,11 @@ const stylesClass: Record<string, { containerClass: string }> = {
       image={p.image}
       video={p.video}
       name={p.name}
-			containerClass={stylesClass[p.id]?.containerClass}
+      containerClass={props[p.id]?.containerClass}
     >
       <h3 class="text-2xl text-bold mb-4">{p.name}</h3>
 
-      <ul class="flex flex-wrap gap-1 mb-4">
+      <ul class="flex flex-wrap gap-1 mb-2 ">
         {p.technologies.map((tech) => (
           <li>
             <TechMark tech={tech} />
@@ -42,7 +68,23 @@ const stylesClass: Record<string, { containerClass: string }> = {
         ))}
       </ul>
 
-      <p>{p.description}</p>
+      <div class="flex gap-x-2 mb-2">
+        {p.repository && (
+          <ExternalLink href={p.repository}>Repository</ExternalLink>
+        )}
+
+        {p.repositories &&
+          p.repositories.map((repo) => (
+            <ExternalLink href={repo.url}>{repo.label}</ExternalLink>
+          ))}
+
+        {p.website && <ExternalLink href={p.website}>Website</ExternalLink>}
+      </div>
+
+      <ProjectContent
+        class={props[p.id]?.contentClass}
+        markdown={props[p.id].markdown}
+      />
     </ProjectDialog>
   ))
 }
