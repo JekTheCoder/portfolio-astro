@@ -93,7 +93,7 @@ export default function EmergentDialog({
     return `transform: translate(${imageRect.x - targetX}px, ${imageRect.top - targetY}px)`;
   };
 
-  const transitionClass = "transition-all duration-[10000ms] ease-in-out";
+  const transitionClass = "transition-all duration-200 ease-in-out";
   const dialogDisplay = "grid grid-rows-[minmax(0,1fr)]";
 
   const classes = createMemo(() => {
@@ -106,26 +106,31 @@ export default function EmergentDialog({
         return {
           dialogStyle: computeDialogPosition(),
           dialogClass: dialogDisplay,
-          pictureStyle: `width: ${imageRect.width}px; height: ${imageRect.height}px`,
+          pictureStyle: createBox(imageRect),
           containerClass: `max-h-none max-w-none`,
-          bodyStyle: `width: 0px; height: 0px`,
+          bodyStyle: `width: 0px; height: 0px;`,
         };
       }
       case OpenStage.Opened:
+        const bodyBox = createBox(openState.bodyRect);
+				const pictureBox = createBox(openState.pictureRect);
+
         return {
           dialogClass: `${transitionClass} ${dialogDisplay}`,
-          pictureClass: `${transitionClass} `,
-          pictureStyle: `width: ${openState.pictureRect.width}px; height: ${openState.pictureRect.height}px`,
-          bodyStyle: `width: ${openState.bodyRect.width}px`,
-          innerBodyStyle: `width: ${openState.bodyRect.width}px; height: ${openState.bodyRect.height}px`,
+          pictureClass: transitionClass,
+          pictureStyle: pictureBox,
+          bodyStyle: bodyBox,
+          innerBodyStyle: bodyBox,
         };
       case OpenStage.PreClosing: {
-        const pictureRect = picture.getBoundingClientRect();
+        const bodyBox = createBox(openState.bodyRect);
+				const pictureBox = createBox(picture.getBoundingClientRect());
+
         return {
           dialogClass: dialogDisplay,
-          pictureStyle: `width: ${pictureRect.width}px; height: ${pictureRect.height}px`,
-          bodyStyle: `width: ${openState.bodyRect.width}px; height: ${openState.bodyRect.height}px`,
-          innerBodyStyle: `width: ${openState.bodyRect.width}px; height: ${openState.bodyRect.height}px`,
+          pictureStyle: pictureBox,
+          bodyStyle: bodyBox,
+          innerBodyStyle: bodyBox,
         };
       }
       case OpenStage.Closing: {
@@ -196,7 +201,7 @@ export default function EmergentDialog({
         stage: OpenStage.Closed,
       });
       dialog.close();
-    }, 10_000);
+    }, 200);
   });
 
   return (
@@ -244,3 +249,7 @@ const computeTargetAxis = (
   currentX: number,
   targetWidth: number,
 ) => (currentWidth - targetWidth) / 2 + currentX;
+
+function createBox({ width, height }: DOMRect) {
+  return `width: ${width}px; height: ${height}px`;
+}
