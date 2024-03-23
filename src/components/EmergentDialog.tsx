@@ -37,6 +37,11 @@ type OpenState =
       stage: OpenStage.Closed;
     };
 
+export const enum DialogAxis {
+  Horizontal,
+  Vertical,
+}
+
 export default function EmergentDialog({
   opened,
   image,
@@ -44,6 +49,7 @@ export default function EmergentDialog({
   fromImage,
   onClose,
   containerClass,
+  dialogAxis,
 }: {
   onClose: () => void;
   opened: Accessor<boolean>;
@@ -51,6 +57,7 @@ export default function EmergentDialog({
   children: JSX.Element;
   fromImage: Accessor<Element | null | undefined>;
   containerClass?: string;
+  dialogAxis: DialogAxis;
 }) {
   let container: HTMLDivElement;
   let dialog: HTMLDialogElement;
@@ -87,6 +94,7 @@ export default function EmergentDialog({
   };
 
   const transitionClass = "transition-all duration-200 ease-in-out";
+  const dialogDisplay = "grid grid-rows-[minmax(0,1fr)]";
 
   const classes = createMemo(() => {
     const openState = openStage();
@@ -97,14 +105,15 @@ export default function EmergentDialog({
       case OpenStage.Opening: {
         return {
           dialogStyle: computeDialogPosition(),
+          dialogClass: dialogDisplay,
           pictureStyle: `width: ${imageRect.width}px; height: ${imageRect.height}px`,
-          pictureClass: `max-h-none`,
-          bodyStyle: `width: 0px`,
+          pictureClass: `max-h-none max-w-none`,
+          bodyStyle: `width: 0px; height: 0px`,
         };
       }
       case OpenStage.Opened:
         return {
-          dialogClass: transitionClass,
+          dialogClass: `${transitionClass} ${dialogDisplay}`,
           pictureClass: `${transitionClass} max-h-none`,
           pictureStyle: `width: ${openState.pictureRect.width}px; height: ${openState.pictureRect.height}px`,
           bodyStyle: `width: ${openState.bodyRect.width}px`,
@@ -113,6 +122,7 @@ export default function EmergentDialog({
       case OpenStage.PreClosing: {
         const pictureRect = picture.getBoundingClientRect();
         return {
+          dialogClass: dialogDisplay,
           pictureStyle: `width: ${pictureRect.width}px; height: ${pictureRect.height}px`,
           bodyStyle: `width: ${openState.bodyRect.width}px; height: ${openState.bodyRect.height}px`,
           innerBodyStyle: `width: ${openState.bodyRect.width}px; height: ${openState.bodyRect.height}px`,
@@ -122,7 +132,7 @@ export default function EmergentDialog({
         const pictureSize = `width: ${imageRect.width}px; height: ${imageRect.height}px;`;
 
         return {
-          dialogClass: transitionClass,
+          dialogClass: `${transitionClass} ${dialogDisplay}`,
           pictureClass: `${transitionClass} max-h-none`,
           pictureStyle: pictureSize,
           dialogStyle: computeDialogPosition(),
@@ -193,20 +203,25 @@ export default function EmergentDialog({
     <dialog
       ref={(e) => (dialog = e)}
       onClick={onClick}
-      class={`fixed inset-0 bg-gray-800 rounded-lg overflow-hidden backdrop:bg-black/50 backdrop:backdrop-blur-md ${classes().dialogClass ?? ""}`}
+      class={`fixed inset-0 bg-gray-800 rounded-lg overflow-hidden backdrop:bg-black/50 backdrop:backdrop-blur-md 
+	${classes().dialogClass}`}
       style={classes().dialogStyle}
     >
-      <div ref={(e) => (container = e)} class={containerClass}>
+      <div
+        ref={(e) => (container = e)}
+        class={`${containerClass} flex ${dialogAxis === DialogAxis.Vertical ? "flex-col" : "flex-row"}`}
+      >
         <picture
           style={classes().pictureStyle}
           ref={(e) => (picture = e)}
-          class={`[&>*]:h-full [&>*]:w-full [&>*]:object-cover w-auto h-[9999px] max-h-96 ${classes().pictureClass ?? ""}`}
+          class={`[&>*]:h-full [&>*]:w-full [&>*]:object-cover max-w-full max-h-full 
+${classes().pictureClass} ${dialogAxis === DialogAxis.Vertical ? "w-[9999px] h-auto" : "h-[9999px] w-auto"}`}
         >
           {image}
         </picture>
 
         <div
-					class={transitionClass}
+          class={transitionClass}
           ref={(e) => (body = e)}
           style={classes().bodyStyle}
         >

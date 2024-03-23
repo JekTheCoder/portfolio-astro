@@ -12,38 +12,46 @@ import * as TermChessMD from "@/content/projects/term-chess.md";
 import * as CcoMD from "@/content/projects/cco.md";
 import * as StopifyMD from "@/content/projects/stopify.md";
 
+import _, { DialogAxis } from "./EmergentDialog";
+
 const props: Record<
   string,
   {
     containerClass: string;
     contentClass?: string;
     markdown: typeof import("*.md");
+		dialogAxis: DialogAxis;
   }
 > = {
   stopify: {
-    containerClass: "flex",
+    containerClass: "flex max-h-[36rem]",
     contentClass: "w-80",
     markdown: StopifyMD,
+		dialogAxis: DialogAxis.Horizontal,
   },
   cco: {
-    containerClass: "flex flex-col",
+    containerClass: "max-w-[36rem]",
     contentClass: "w-full",
     markdown: CcoMD,
+		dialogAxis: DialogAxis.Vertical,
   },
   catstagram: {
-    containerClass: "flex flex-row-reverse",
+    containerClass: "flex flex-row-reverse max-h-[36rem]",
     contentClass: "w-80",
     markdown: CatstagramMD,
+		dialogAxis: DialogAxis.Horizontal,
   },
   "term-chess": {
-    containerClass: "flex flex-col-reverse",
+    containerClass: "flex-col-reverse max-w-[36rem]",
     contentClass: "w-full",
     markdown: TermChessMD,
+		dialogAxis: DialogAxis.Vertical,
   },
   blog: {
-    containerClass: "flex",
+    containerClass: "flex max-h-[36rem]",
     contentClass: "w-80",
     markdown: BlogMD,
+		dialogAxis: DialogAxis.Horizontal,
   },
 };
 ---
@@ -57,6 +65,7 @@ const props: Record<
       video={p.video}
       name={p.name}
       containerClass={props[p.id]?.containerClass}
+			dialogAxis={props[p.id]?.dialogAxis}
     >
       <h3 class="text-2xl text-bold mb-4">{p.name}</h3>
 

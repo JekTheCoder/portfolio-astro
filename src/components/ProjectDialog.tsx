@@ -1,5 +1,5 @@
 import { projectDialog, setProjectDialog } from "@/lib/state/project-dialog";
-import EmergentDialog from "./EmergentDialog";
+import EmergentDialog, { DialogAxis } from "./EmergentDialog";
 import { type JSX, createEffect, createSignal } from "solid-js";
 
 const [opened, setOpened] = createSignal<
@@ -27,6 +27,7 @@ export default function ProjectDialog({
   children,
   name,
   containerClass,
+  dialogAxis,
 }: {
   projectId: string;
   image?: string;
@@ -34,6 +35,7 @@ export default function ProjectDialog({
   children: JSX.Element;
   name: string;
   containerClass?: string;
+  dialogAxis: DialogAxis;
 }) {
   const closeDialog = () => setProjectDialog(null);
 
@@ -51,6 +53,7 @@ export default function ProjectDialog({
       fromImage={() => opened()?.lastImage}
       opened={() => opened()?.id === projectId}
       containerClass={containerClass}
+      dialogAxis={dialogAxis}
     >
       {children}
     </EmergentDialog>
