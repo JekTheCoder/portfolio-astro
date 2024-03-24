@@ -1,8 +1,8 @@
+import { createTimeout } from "@/lib/solid";
 import {
   createEffect,
   createMemo,
   createSignal,
-  onCleanup,
   type Accessor,
   type JSX,
 } from "solid-js";
@@ -237,11 +237,6 @@ ${classes().pictureClass} ${dialogAxis === DialogAxis.Vertical ? "w-[9999px] h-a
       </div>
     </dialog>
   );
-}
-
-function createTimeout(callback: () => void, ms?: number) {
-  const timeout = setTimeout(callback, ms);
-  onCleanup(() => clearTimeout(timeout));
 }
 
 const computeTargetAxis = (

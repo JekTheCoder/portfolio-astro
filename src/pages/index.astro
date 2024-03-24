@@ -2,7 +2,7 @@
 import Document from "../layouts/Document.astro";
 import Badge from "@/components/Badge.astro";
 import ContactPill from "@/components/ContactPill.astro";
-import ContactInfo from "@/components/ContactInfo.astro";
+import ContactInfo from "@/components/ContactInfo.tsx";
 import Link from "@/components/Link.astro";
 
 import Experience from "@/components/Experience.astro";
@@ -80,13 +80,13 @@ const timeline = [
         </ContactPill>
       </li>
       <li>
-        <ContactInfo>hinostrozajeshua@gmail.com</ContactInfo>
+        <ContactInfo client:load>hinostrozajeshua@gmail.com</ContactInfo>
       </li>
       <li>
         <ContactPill href="https://wa.me/51922404782">WhatsApp</ContactPill>
       </li>
       <li>
-        <ContactInfo>+51 922-404-782</ContactInfo>
+        <ContactInfo client:load>+51 922-404-782</ContactInfo>
       </li>
     </ul>
   </section>
