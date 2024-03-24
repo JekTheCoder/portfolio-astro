@@ -1,11 +1,36 @@
-<header class="text-bold py-2 sticky top-0 z-20 backdrop-blur">
-  <div class="container mx-auto flex justify-between">
-    <div class=""></div>
+---
+import Link from "../Link.astro";
+---
 
-    <nav>
-      <ul>
-        <li><a href="#">Contact Me</a></li>
-      </ul>
-    </nav>
-  </div>
+<header class="text-bold py-2 sticky top-0 z-20">
+  <nav class="container mx-auto">
+    <ul class="grid grid-cols-[auto_1fr_auto_auto] gap-x-4">
+      <li>
+        <Link href="/"> Home</Link>
+      </li>
+      <li></li>
+      <li>
+        <Link href="/#about"> About Me</Link>
+      </li>
+      <li>
+        <Link href="/#contact"> Contact Me </Link>
+      </li>
+    </ul>
+  </nav>
 </header>
+
+<style>
+  header {
+    animation: scroll-blur linear both;
+    animation-timeline: scroll();
+  }
+
+  @keyframes scroll-blur {
+    0% {
+      backdrop-filter: blur(0);
+    }
+    100% {
+      backdrop-filter: blur(theme("backdropBlur.DEFAULT"));
+    }
+  }
+</style>
