@@ -17,37 +17,32 @@ import Svg from "./Svg.astro";
 const props: Record<
   string,
   {
-    contentClass?: string;
     markdown: typeof import("*.md");
   }
 > = {
   stopify: {
-    contentClass: "w-80",
     markdown: StopifyMD,
   },
   cco: {
-    contentClass: "w-full",
     markdown: CcoMD,
   },
   catstagram: {
-    contentClass: "w-80",
     markdown: CatstagramMD,
   },
   "term-chess": {
-    contentClass: "w-full",
     markdown: TermChessMD,
   },
   blog: {
-    contentClass: "w-80",
     markdown: BlogMD,
   },
 };
 
 interface Props {
   project: ProjectInfo;
+  contentClass?: string;
 }
 
-const { project } = Astro.props;
+const { project, contentClass } = Astro.props;
 ---
 
 <h3 class="text-2xl text-bold mb-4">{project.name}</h3>
@@ -98,7 +93,4 @@ const { project } = Astro.props;
   }
 </div>
 
-<ProjectMarkdown
-  class={props[project.id]?.contentClass}
-  markdown={props[project.id].markdown}
-/>
+<ProjectMarkdown markdown={props[project.id].markdown} class={contentClass} />

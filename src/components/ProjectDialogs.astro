@@ -9,28 +9,34 @@ const props: Record<
   string,
   {
     containerClass: string;
+    contentClass?: string;
     dialogAxis: DialogAxis;
   }
 > = {
   stopify: {
     containerClass: "flex max-h-[36rem]",
     dialogAxis: DialogAxis.Horizontal,
+    contentClass: "w-80",
   },
   cco: {
     containerClass: "max-w-[36rem]",
     dialogAxis: DialogAxis.Vertical,
+    contentClass: "w-full",
   },
   catstagram: {
     containerClass: "flex flex-row-reverse max-h-[36rem]",
     dialogAxis: DialogAxis.Horizontal,
+    contentClass: "w-80",
   },
   "term-chess": {
     containerClass: "flex-col-reverse max-w-[36rem]",
     dialogAxis: DialogAxis.Vertical,
+    contentClass: "w-full",
   },
   blog: {
     containerClass: "flex max-h-[36rem]",
     dialogAxis: DialogAxis.Horizontal,
+    contentClass: "w-80",
   },
 };
 ---
@@ -46,7 +52,7 @@ const props: Record<
       containerClass={props[p.id]?.containerClass}
       dialogAxis={props[p.id]?.dialogAxis}
     >
-      <ProjectContent project={p} />
+      <ProjectContent project={p} contentClass={props[p.id]?.contentClass} />
     </ProjectDialog>
   ))
 }

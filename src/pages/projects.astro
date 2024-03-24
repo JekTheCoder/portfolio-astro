@@ -8,38 +8,87 @@ const props: Record<
   string,
   {
     containerClass: string;
+    pictureClass?: string;
+    contentClass?: string;
   }
 > = {
-  stopify: {
-    containerClass: "flex max-h-[36rem]",
-  },
-  cco: {
-    containerClass: "max-w-[36rem]",
-  },
   catstagram: {
-    containerClass: "flex gap-x-4 flex-row-reverse max-h-[36rem]",
-  },
-  "term-chess": {
-    containerClass: "flex-col-reverse max-w-[36rem]",
+    containerClass:
+      "flex gap-4 flex-col md:flex-row-reverse md:max-h-[36rem] [grid-area:catstagram]",
+    pictureClass: "w-full h-auto md:h-full md:w-auto",
+    contentClass: "flex-1",
   },
   blog: {
-    containerClass: "flex max-h-[36rem]",
+    containerClass:
+      "flex flex-col md:flex-row md:max-h-[36rem] gap-4 [grid-area:blog]",
+    pictureClass: "w-full h-auto md:h-full md:w-auto",
+    contentClass: "flex-1",
+  },
+  stopify: {
+    containerClass:
+      "flex flex-col lg:justify-between lg:flex-row gap-4 [grid-area:stopify]",
+    pictureClass: "h-full w-auto max-w-full flex-1",
+    contentClass: "w-max",
+  },
+  cco: {
+    containerClass: "max-w-[36rem] justify-self-center [grid-area:cco]",
+  },
+  "term-chess": {
+    containerClass:
+      "flex flex-col-reverse gap-4 max-w-[36rem] justify-self-center [grid-area:term-chess]",
+    contentClass: "w-full",
   },
 };
 ---
 
 <Document>
-  <div class="container mx-auto grid gap-8">
+  <div class="container mx-auto gap-8 grid projects">
     {
       PROJECTS.map((project) => (
-        <section id={project.id} class={`${props[project.id]?.containerClass} w-full`}>
-          <div class="">
-            <ProjectContent project={project} />
+        <section
+          id={project.id}
+          class={`${props[project.id]?.containerClass} w-full`}
+        >
+          <div class={props[project.id]?.contentClass}>
+            <ProjectContent
+              project={project}
+              contentClass={props[project.id]?.contentClass}
+            />
           </div>
 
-          <ProjectMedia {...project} class="h-full w-auto" />
+          <picture class="p-4 md:p-0">
+            <ProjectMedia
+              {...project}
+              class={`${props[project.id]?.pictureClass} rounded-lg`}
+            />
+          </picture>
         </section>
       ))
     }
   </div>
 </Document>
+
+<style>
+  .projects {
+    grid-template-areas:
+      "catstagram"
+			"blog"
+      "stopify"
+      "cco"
+      "term-chess";
+
+    grid-template-columns: 1fr;
+  }
+
+  @screen lg {
+    .projects {
+      grid-template-areas:
+        "catstagram catstagram"
+        "blog blog"
+        "stopify stopify"
+        "cco term-chess";
+
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
