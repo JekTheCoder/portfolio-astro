@@ -11,6 +11,7 @@ import TimelineList from "@/components/timeline/TimelineList.astro";
 import TimelineItem from "@/components/timeline/TimelineItem.astro";
 import TimelineItemTitle from "@/components/timeline/TimelineItemTitle.astro";
 import TimeRange from "@/components/timeline/TimeRange.astro";
+import About from "@/components/About.astro";
 
 const company = {
   name: "ATIRPAY Solutions",
@@ -96,7 +97,7 @@ const timeline = [
     <Link href="#experience"> Experience </Link>
   </div>
 
-  <section id="experience" class="bg-gray-800 px-4 py-12">
+  <section id="experience" class="bg-gray-800 px-4 py-12 mb-12">
     <div class="container mx-auto">
       <h2 class="text-bold font-medium text-4xl mb-6">Laboral Experience</h2>
 
@@ -124,9 +125,11 @@ const timeline = [
     </div>
   </section>
 
-  <section id="projects" class="max-w-3xl lg:container mx-auto my-5">
+  <section id="projects" class="max-w-3xl lg:container mx-auto my-5 mb-12">
     <h2 class="text-bold font-medium text-4xl mb-6">Projects</h2>
 
 		<Experience />
   </section>
+
+	<About />
 </Document>
