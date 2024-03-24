@@ -1,8 +1,8 @@
 import { setToast } from "@/lib/state/toast";
 
-export default function ContactInfo({ children }: { children: HTMLElement }) {
+export default function ContactInfo({ children }: { children: HTMLElement | string }) {
   const copy = () => {
-    navigator.clipboard.writeText(children.innerHTML);
+    navigator.clipboard.writeText((children as HTMLElement).innerHTML);
     setToast("copied!");
   };
 

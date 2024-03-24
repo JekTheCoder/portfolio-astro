@@ -1,0 +1,52 @@
+---
+import ContactPill from "@/components/ContactPill.astro";
+import ContactInfo from "@/components/ContactInfo.tsx";
+
+import Svg from "./Svg.astro";
+import GithubIcon from "@/public/icons/github.svg?raw";
+import LinkedinIcon from "@/public/icons/linkedin.svg?raw";
+import EmailIcon from "@/public/icons/email.svg?raw";
+import WhatsappIcon from "@/public/icons/whatsapp.svg?raw";
+---
+
+<ul class="flex flex-wrap gap-x-2 gap-y-4 mt-4" id="contact">
+  <li>
+    <ContactPill href="https://linkedin.com/in/jeshua-hinostroza/">
+      <div class="w-4 h-4">
+        <Svg svg={LinkedinIcon} />
+      </div>
+      LinkedIn
+    </ContactPill>
+  </li>
+  <li>
+    <ContactPill href="https://github.com/JekTheCoder">
+      <div class="w-4 h-4">
+        <Svg svg={GithubIcon} />
+      </div>
+
+      GitHub
+    </ContactPill>
+  </li>
+  <li>
+    <ContactPill href="mailto:hinostrozajeshua@gmail.com">
+      <div class="w-4 h-4">
+        <Svg svg={EmailIcon} />
+      </div>
+      Email
+    </ContactPill>
+  </li>
+  <li>
+    <ContactInfo client:load>hinostrozajeshua@gmail.com</ContactInfo>
+  </li>
+  <li>
+    <ContactPill href="https://wa.me/51922404782">
+      <div class="w-4 h-4">
+        <Svg svg={WhatsappIcon} />
+      </div>
+      WhatsApp</ContactPill
+    >
+  </li>
+  <li>
+    <ContactInfo client:load>+51 922-404-782</ContactInfo>
+  </li>
+</ul>

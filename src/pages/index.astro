@@ -1,8 +1,6 @@
 ---
 import Document from "../layouts/Document.astro";
 import Badge from "@/components/Badge.astro";
-import ContactPill from "@/components/ContactPill.astro";
-import ContactInfo from "@/components/ContactInfo.tsx";
 import Link from "@/components/Link.astro";
 
 import Experience from "@/components/Experience.astro";
@@ -12,6 +10,7 @@ import TimelineItem from "@/components/timeline/TimelineItem.astro";
 import TimelineItemTitle from "@/components/timeline/TimelineItemTitle.astro";
 import TimeRange from "@/components/timeline/TimeRange.astro";
 import About from "@/components/About.astro";
+import Contact from "@/components/Contact.astro";
 
 const company = {
   name: "ATIRPAY Solutions",
@@ -64,32 +63,7 @@ const timeline = [
       and UIs for the better user experience.
     </p>
 
-    <ul class="flex flex-wrap gap-x-2 gap-y-4 mt-4" id="contact">
-      <li>
-        <ContactPill href="https://www.linkedin.com/in/jeshua-hinostroza/">
-          LinkedIn
-        </ContactPill>
-      </li>
-      <li>
-        <ContactPill href="https://github.com/JekTheCoder">
-          GitHub
-        </ContactPill>
-      </li>
-      <li>
-        <ContactPill href="mailto:hinostrozajeshua@gmail.com">
-          Email
-        </ContactPill>
-      </li>
-      <li>
-        <ContactInfo client:load>hinostrozajeshua@gmail.com</ContactInfo>
-      </li>
-      <li>
-        <ContactPill href="https://wa.me/51922404782">WhatsApp</ContactPill>
-      </li>
-      <li>
-        <ContactInfo client:load>+51 922-404-782</ContactInfo>
-      </li>
-    </ul>
+    <Contact />
   </section>
 
   <div class="flex justify-center gap-x-4 items-end h-96 mb-24 text-xl">
@@ -128,8 +102,8 @@ const timeline = [
   <section id="projects" class="max-w-3xl lg:container mx-auto my-5 mb-12">
     <h2 class="text-bold font-medium text-4xl mb-6">Projects</h2>
 
-		<Experience />
+    <Experience />
   </section>
 
-	<About />
+  <About />
 </Document>
