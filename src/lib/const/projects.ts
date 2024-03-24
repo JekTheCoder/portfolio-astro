@@ -2,7 +2,7 @@ export const PROJECTS = [
   {
     id: "catstagram",
     name: "Catstagram",
-    image: "/catstagram.png",
+    image: "/catstagram.webp",
     repository: "https://github.com/JekTheCoder/catstagram",
     technologies: ["svelte"],
   },
@@ -10,7 +10,7 @@ export const PROJECTS = [
   {
     id: "blog",
     name: "My personal Blog",
-    image: "/blog-preview.png",
+    image: "/blog-preview.webp",
     technologies: ["rust", "svelte", "tailwind"],
     website: "https://www.jeshuahinostroza.com/",
     repositories: [
@@ -28,7 +28,7 @@ export const PROJECTS = [
   {
     id: "stopify",
     name: "Stopify ;)",
-    image: "/stopify.png",
+    image: "/stopify.webp",
     technologies: ["astro", "tailwind", "solid"],
     repository: "https://github.com/JekTheCoder/astro-spotify-demo",
   },
