@@ -1,13 +1,12 @@
 ---
-interface Props {
-  href: string;
-}
+type Props = Omit<Partial<HTMLAnchorElement>, 'class' | 'children'>;
 
-const { href } = Astro.props;
+const { href, target } = Astro.props;
 ---
 
 <a
 	href={href}
+	target={target}
   class="after:bg-bold text-bold after:h-px after:block after:w-0 hover:after:w-full after:transition-all"
 >
 	<slot />
