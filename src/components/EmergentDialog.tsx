@@ -42,6 +42,8 @@ export const enum DialogAxis {
   Vertical,
 }
 
+const OPENING_DURATION = 200;
+
 export default function EmergentDialog({
   opened,
   image,
@@ -96,6 +98,19 @@ export default function EmergentDialog({
   const transitionClass = "transition-all duration-200 ease-in-out";
   const dialogDisplay = "grid grid-rows-[minmax(0,1fr)]";
 
+  const bodyHiddenBox = () =>
+    createBox(
+      dialogAxis === DialogAxis.Horizontal
+        ? {
+            width: 0,
+            height: imageRect.height,
+          }
+        : {
+            width: imageRect.width,
+            height: 0,
+          },
+    );
+
   const classes = createMemo(() => {
     const openState = openStage();
 
@@ -108,12 +123,13 @@ export default function EmergentDialog({
           dialogClass: dialogDisplay,
           pictureStyle: createBox(imageRect),
           containerClass: `max-h-none max-w-none`,
-          bodyStyle: `width: 0px; height: 0px;`,
+          bodyStyle: bodyHiddenBox(),
+          bodyClass: "overflow-hidden",
         };
       }
       case OpenStage.Opened:
         const bodyBox = createBox(openState.bodyRect);
-				const pictureBox = createBox(openState.pictureRect);
+        const pictureBox = createBox(openState.pictureRect);
 
         return {
           dialogClass: `${transitionClass} ${dialogDisplay}`,
@@ -121,10 +137,11 @@ export default function EmergentDialog({
           pictureStyle: pictureBox,
           bodyStyle: bodyBox,
           innerBodyStyle: bodyBox,
+          bodyClass: "overflow-hidden",
         };
       case OpenStage.PreClosing: {
         const bodyBox = createBox(openState.bodyRect);
-				const pictureBox = createBox(picture.getBoundingClientRect());
+        const pictureBox = createBox(picture.getBoundingClientRect());
 
         return {
           dialogClass: dialogDisplay,
@@ -134,15 +151,14 @@ export default function EmergentDialog({
         };
       }
       case OpenStage.Closing: {
-        const pictureSize = `width: ${imageRect.width}px; height: ${imageRect.height}px;`;
-
         return {
           dialogClass: `${transitionClass} ${dialogDisplay}`,
           pictureClass: `${transitionClass}`,
-          pictureStyle: pictureSize,
+          pictureStyle: createBox(imageRect),
           dialogStyle: computeDialogPosition(),
-          bodyStyle: `width: 0px; height: 0px;`,
-          innerBodyStyle: `width: ${openState.bodyRect.width}px; height: ${openState.bodyRect.height}px`,
+          bodyStyle: bodyHiddenBox(),
+          innerBodyStyle: createBox(openState.bodyRect),
+          bodyClass: "overflow-hidden",
         };
       }
       case OpenStage.Closed:
@@ -177,7 +193,7 @@ export default function EmergentDialog({
           bodyRect,
           pictureRect,
         });
-      }, 100);
+      }, OPENING_DURATION);
 
       return;
     }
@@ -201,7 +217,7 @@ export default function EmergentDialog({
         stage: OpenStage.Closed,
       });
       dialog.close();
-    }, 200);
+    }, OPENING_DURATION);
   });
 
   return (
@@ -226,7 +242,7 @@ ${classes().pictureClass} ${dialogAxis === DialogAxis.Vertical ? "w-[9999px] h-a
         </picture>
 
         <div
-          class={transitionClass}
+          class={`${transitionClass} ${classes().bodyClass}`}
           ref={(e) => (body = e)}
           style={classes().bodyStyle}
         >
@@ -245,6 +261,6 @@ const computeTargetAxis = (
   targetWidth: number,
 ) => (currentWidth - targetWidth) / 2 + currentX;
 
-function createBox({ width, height }: DOMRect) {
+function createBox({ width, height }: Pick<DOMRect, "width" | "height">) {
   return `width: ${width}px; height: ${height}px`;
 }
