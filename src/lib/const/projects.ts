@@ -3,7 +3,7 @@ export const PROJECTS = [
     id: "catstagram",
     name: "Catstagram",
     image: "/catstagram.webp",
-    repository: "https://github.com/JekTheCoder/catstagram",
+    repository: "https://github.com/ocxide/catstagram",
     technologies: ["svelte"],
   },
 
@@ -16,11 +16,11 @@ export const PROJECTS = [
     repositories: [
       {
         label: "Server",
-        url: "https://github.com/JekTheCoder/actix-blog",
+        url: "https://github.com/ocxide/actix-blog",
       },
       {
         label: "Frontend",
-        url: "https://github.com/JekTheCoder/blog-clients",
+        url: "https://github.com/ocxide/blog-clients",
       },
     ],
   },
@@ -30,7 +30,7 @@ export const PROJECTS = [
     name: "Stopify ;)",
     image: "/stopify.webp",
     technologies: ["astro", "tailwind", "solid"],
-    repository: "https://github.com/JekTheCoder/astro-spotify-demo",
+    repository: "https://github.com/ocxide/astro-spotify-demo",
   },
 
   {
@@ -38,7 +38,7 @@ export const PROJECTS = [
     name: "TermChess",
     video: "/term-chess.webm",
     technologies: ["rust"],
-    repository: "https://github.com/JekTheCoder/term-chess-rs",
+    repository: "https://github.com/ocxide/term-chess-rs",
   },
 
   {
@@ -46,7 +46,7 @@ export const PROJECTS = [
     name: "Code Conjurer",
     video: "/cco.webm",
     technologies: ["rust"],
-    repository: "https://github.com/JekTheCoder/code-conjurer",
+    repository: "https://github.com/ocxide/code-conjurer",
   },
 ];
 
