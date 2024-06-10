@@ -50,7 +50,8 @@ const createMainlyHorizontal = (setter: Setter<DialogAxis>) => {
 	setter(match.matches ? DialogAxis.Vertical : DialogAxis.Horizontal);
 
 	match.addEventListener("change", (e) => {
-		setter(e.matches ? DialogAxis.Vertical : DialogAxis.Vertical);
+		console.log('match')
+		setter(e.matches ? DialogAxis.Vertical : DialogAxis.Horizontal);
 	});
 }
 
@@ -93,6 +94,7 @@ export default function EmergentDialog({
 
 	onMount(() => {
 		if (openMode === DialogOpenMode.MainlyHorizontal) {
+			console.log("createMainlyHorizontal")
 			createMainlyHorizontal(setDialogAxis)
 			return
 		}
@@ -182,7 +184,7 @@ export default function EmergentDialog({
 			}
 			case OpenStage.Opened: {
 				return {
-					bodyClass: "overflow-auto",
+					bodyClass: dialogAxis() === DialogAxis.Vertical ? "overflow-auto" : "",
 				}
 			}
 			case OpenStage.PreClosing: {
