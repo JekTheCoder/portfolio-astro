@@ -10,6 +10,7 @@ import {
 } from "solid-js";
 
 const enum OpenStage {
+	PreOpening,
 	Opening,
 	Opened,
 	PreClosing,
@@ -19,13 +20,16 @@ const enum OpenStage {
 
 type OpenState =
 	| {
+		stage: OpenStage.PreOpening;
+		bodyRect: DOMRect;
+	}
+	| {
 		stage: OpenStage.Opening;
+		bodyRect: DOMRect;
 		pictureRect: DOMRect;
 	}
 	| {
 		stage: OpenStage.Opened;
-		bodyRect: DOMRect;
-		pictureRect: DOMRect;
 	}
 	| {
 		stage: OpenStage.PreClosing;
@@ -152,17 +156,18 @@ export default function EmergentDialog({
 		if (!imageRect) return {};
 
 		switch (openState.stage) {
-			case OpenStage.Opening: {
+			case OpenStage.PreOpening: {
 				return {
-					dialogStyle: computeDialogPosition(),
 					dialogClass: dialogDisplay,
 					pictureStyle: createBox(imageRect),
-					containerClass: `max-h-none max-w-none`,
+					dialogStyle: computeDialogPosition(),
 					bodyStyle: bodyHiddenBox(),
+					innerBodyStyle: createBox(openState.bodyRect),
 					bodyClass: "overflow-hidden",
 				};
 			}
-			case OpenStage.Opened:
+
+			case OpenStage.Opening: {
 				const bodyBox = createBox(openState.bodyRect);
 				const pictureBox = createBox(openState.pictureRect);
 
@@ -174,6 +179,12 @@ export default function EmergentDialog({
 					innerBodyStyle: bodyBox,
 					bodyClass: "overflow-hidden",
 				};
+			}
+			case OpenStage.Opened: {
+				return {
+					bodyClass: "overflow-auto",
+				}
+			}
 			case OpenStage.PreClosing: {
 				const bodyBox = createBox(openState.bodyRect);
 				const pictureBox = createBox(picture.getBoundingClientRect());
@@ -218,9 +229,17 @@ export default function EmergentDialog({
 			const pictureRect = picture.getBoundingClientRect();
 
 			setOpenStage({
-				stage: OpenStage.Opening,
-				pictureRect,
+				stage: OpenStage.PreOpening,
+				bodyRect,
 			});
+
+			createTimeout(() => {
+				setOpenStage({
+					stage: OpenStage.Opening,
+					bodyRect,
+					pictureRect,
+				});
+			}, 0);
 
 			createTimeout(() => {
 				setOpenStage({
