@@ -2,57 +2,58 @@
 import { PROJECTS } from "@/lib/const/projects";
 import ProjectDialog from "./ProjectDialog.tsx";
 
-import _, { DialogAxis } from "./EmergentDialog";
+import _, { DialogOpenMode } from "./EmergentDialog";
 import ProjectContent from "./ProjectContent.astro";
 
 const props: Record<
-  string,
-  {
-    containerClass: string;
-    contentClass?: string;
-    dialogAxis: DialogAxis;
-  }
+	string,
+	{
+		containerClass: string;
+		contentClass?: string;
+		pictureClass?: string;
+		openMode: DialogOpenMode;
+	}
 > = {
-  stopify: {
-    containerClass: "grid sm:flex max-h-[36rem] max-w-[70rem]",
-    dialogAxis: DialogAxis.Horizontal,
-    contentClass: "w-80",
-  },
-  cco: {
-    containerClass: "max-w-[50rem]",
-    dialogAxis: DialogAxis.Vertical,
-    contentClass: "w-full",
-  },
-  catstagram: {
-    containerClass: "grid sm:flex flex-row-reverse max-h-[36rem] max-w-[50rem]",
-    dialogAxis: DialogAxis.Horizontal,
-    contentClass: "w-80",
-  },
-  "term-chess": {
-    containerClass: "flex-col-reverse max-w-[50rem]",
-    dialogAxis: DialogAxis.Vertical,
-    contentClass: "w-full",
-  },
-  blog: {
-    containerClass: "grid sm:flex max-h-[36rem] max-w-[60rem]",
-    dialogAxis: DialogAxis.Horizontal,
-    contentClass: "w-80",
-  },
+	stopify: {
+		containerClass: "flex max-h-[36rem] max-w-[70rem]",
+		openMode: DialogOpenMode.MainlyHorizontal,
+		contentClass: "lg:w-80",
+	},
+	cco: {
+		containerClass: "max-w-[50rem]",
+		openMode: DialogOpenMode.Vertical,
+		contentClass: "w-full",
+	},
+	catstagram: {
+		containerClass: "flex lg:flex-row-reverse lg:max-h-[36rem] max-w-[50rem]",
+		openMode: DialogOpenMode.MainlyHorizontal,
+		contentClass: "lg:w-80",
+	},
+	"term-chess": {
+		containerClass: "flex-col-reverse max-w-[50rem]",
+		openMode: DialogOpenMode.Vertical,
+		contentClass: "w-full",
+	},
+	blog: {
+		containerClass: "lg:max-h-[36rem] max-w-[60rem]",
+		openMode: DialogOpenMode.MainlyHorizontal,
+		contentClass: "lg:w-80",
+	},
 };
 ---
 
 {
-  PROJECTS.map((p) => (
-    <ProjectDialog
-      client:load
-      projectId={p.id}
-      image={p.image}
-      video={p.video}
-      name={p.name}
-      containerClass={props[p.id]?.containerClass}
-      dialogAxis={props[p.id]?.dialogAxis}
-    >
-      <ProjectContent project={p} contentClass={props[p.id]?.contentClass} />
-    </ProjectDialog>
-  ))
+	PROJECTS.map((p) => (
+		<ProjectDialog
+			client:load
+			projectId={p.id}
+			image={p.image}
+			video={p.video}
+			name={p.name}
+			containerClass={props[p.id]?.containerClass}
+			openMode={props[p.id]?.openMode}
+		>
+			<ProjectContent project={p} contentClass={props[p.id]?.contentClass} />
+		</ProjectDialog>
+	))
 }

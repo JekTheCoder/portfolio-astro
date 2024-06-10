@@ -1,266 +1,301 @@
 import { createTimeout } from "@/lib/solid";
 import {
-  createEffect,
-  createMemo,
-  createSignal,
-  type Accessor,
-  type JSX,
+	createEffect,
+	createMemo,
+	createSignal,
+	onMount,
+	type Accessor,
+	type JSX,
+	type Setter,
 } from "solid-js";
 
 const enum OpenStage {
-  Opening,
-  Opened,
-  PreClosing,
-  Closing,
-  Closed,
+	Opening,
+	Opened,
+	PreClosing,
+	Closing,
+	Closed,
 }
 
 type OpenState =
-  | {
-      stage: OpenStage.Opening;
-      pictureRect: DOMRect;
-    }
-  | {
-      stage: OpenStage.Opened;
-      bodyRect: DOMRect;
-      pictureRect: DOMRect;
-    }
-  | {
-      stage: OpenStage.PreClosing;
-      bodyRect: DOMRect;
-    }
-  | {
-      stage: OpenStage.Closing;
-      bodyRect: DOMRect;
-    }
-  | {
-      stage: OpenStage.Closed;
-    };
+	| {
+		stage: OpenStage.Opening;
+		pictureRect: DOMRect;
+	}
+	| {
+		stage: OpenStage.Opened;
+		bodyRect: DOMRect;
+		pictureRect: DOMRect;
+	}
+	| {
+		stage: OpenStage.PreClosing;
+		bodyRect: DOMRect;
+	}
+	| {
+		stage: OpenStage.Closing;
+		bodyRect: DOMRect;
+	}
+	| {
+		stage: OpenStage.Closed;
+	};
+
+const MIN_WIDTH = 700;
+
+const createMainlyHorizontal = (setter: Setter<DialogAxis>) => {
+	const match = window.matchMedia(`(max-width: ${MIN_WIDTH}px)`);
+	setter(match.matches ? DialogAxis.Vertical : DialogAxis.Horizontal);
+
+	match.addEventListener("change", (e) => {
+		setter(e.matches ? DialogAxis.Vertical : DialogAxis.Vertical);
+	});
+}
+
+export const enum DialogOpenMode {
+	Horizontal,
+	Vertical,
+	MainlyHorizontal,
+}
 
 export const enum DialogAxis {
-  Horizontal,
-  Vertical,
+	Horizontal,
+	Vertical,
 }
 
 const OPENING_DURATION = 200;
 
 export default function EmergentDialog({
-  opened,
-  image,
-  children,
-  fromImage,
-  onClose,
-  containerClass,
-  dialogAxis,
+	opened,
+	image,
+	children,
+	fromImage,
+	onClose,
+	containerClass,
+	openMode,
 }: {
-  onClose: () => void;
-  opened: Accessor<boolean>;
-  image: JSX.Element;
-  children: JSX.Element;
-  fromImage: Accessor<Element | null | undefined>;
-  containerClass?: string;
-  dialogAxis: DialogAxis;
+	onClose: () => void;
+	opened: Accessor<boolean>;
+	image: JSX.Element;
+	children: JSX.Element;
+	fromImage: Accessor<Element | null | undefined>;
+	containerClass?: string;
+	openMode: DialogOpenMode;
 }) {
-  let container: HTMLDivElement;
-  let dialog: HTMLDialogElement;
-  let body: HTMLElement;
-  let picture: Element;
+	let container: HTMLDivElement;
+	let dialog: HTMLDialogElement;
+	let body: HTMLElement;
+	let picture: Element;
 
-  const onClick = (e: Event) => {
-    if (!container.contains(e.target as Node)) {
-      onClose();
-    }
-  };
+	const [dialogAxis, setDialogAxis] = createSignal<DialogAxis>(DialogAxis.Vertical);
 
-  const [openStage, setOpenStage] = createSignal<OpenState>({
-    stage: OpenStage.Closed,
-  });
+	onMount(() => {
+		if (openMode === DialogOpenMode.MainlyHorizontal) {
+			createMainlyHorizontal(setDialogAxis)
+			return
+		}
 
-  let imageRect: DOMRect;
+		if (openMode === DialogOpenMode.Vertical) {
+			setDialogAxis(DialogAxis.Vertical)
+			return
+		}
 
-  const computeDialogPosition = () => {
-    const dialogRect = dialog.getBoundingClientRect();
-    const targetX = computeTargetAxis(
-      dialogRect.width,
-      dialogRect.x,
-      imageRect.width,
-    );
+		setDialogAxis(DialogAxis.Horizontal)
+	})
 
-    const targetY = computeTargetAxis(
-      dialogRect.height,
-      dialogRect.y,
-      imageRect.height,
-    );
+	const onClick = (e: Event) => {
+		if (!container.contains(e.target as Node)) {
+			onClose();
+		}
+	};
 
-    return `transform: translate(${imageRect.x - targetX}px, ${imageRect.top - targetY}px)`;
-  };
+	const [openStage, setOpenStage] = createSignal<OpenState>({
+		stage: OpenStage.Closed,
+	});
 
-  const transitionClass = "transition-all duration-200 ease-in-out";
-  const dialogDisplay = "grid grid-rows-[minmax(0,1fr)]";
+	let imageRect: DOMRect;
 
-  const bodyHiddenBox = () =>
-    createBox(
-      dialogAxis === DialogAxis.Horizontal
-        ? {
-            width: 0,
-            height: imageRect.height,
-          }
-        : {
-            width: imageRect.width,
-            height: 0,
-          },
-    );
+	const computeDialogPosition = () => {
+		const dialogRect = dialog.getBoundingClientRect();
+		const targetX = computeTargetAxis(
+			dialogRect.width,
+			dialogRect.x,
+			imageRect.width,
+		);
 
-  const classes = createMemo(() => {
-    const openState = openStage();
+		const targetY = computeTargetAxis(
+			dialogRect.height,
+			dialogRect.y,
+			imageRect.height,
+		);
 
-    if (!imageRect) return {};
+		return `transform: translate(${imageRect.x - targetX}px, ${imageRect.top - targetY}px)`;
+	};
 
-    switch (openState.stage) {
-      case OpenStage.Opening: {
-        return {
-          dialogStyle: computeDialogPosition(),
-          dialogClass: dialogDisplay,
-          pictureStyle: createBox(imageRect),
-          containerClass: `max-h-none max-w-none`,
-          bodyStyle: bodyHiddenBox(),
-          bodyClass: "overflow-hidden",
-        };
-      }
-      case OpenStage.Opened:
-        const bodyBox = createBox(openState.bodyRect);
-        const pictureBox = createBox(openState.pictureRect);
+	const transitionClass = "transition-all duration-200 ease-in-out";
+	const dialogDisplay = "grid grid-rows-[minmax(0,1fr)]";
 
-        return {
-          dialogClass: `${transitionClass} ${dialogDisplay}`,
-          pictureClass: transitionClass,
-          pictureStyle: pictureBox,
-          bodyStyle: bodyBox,
-          innerBodyStyle: bodyBox,
-          bodyClass: "overflow-hidden",
-        };
-      case OpenStage.PreClosing: {
-        const bodyBox = createBox(openState.bodyRect);
-        const pictureBox = createBox(picture.getBoundingClientRect());
+	const bodyHiddenBox = () =>
+		createBox(
+			dialogAxis() === DialogAxis.Horizontal
+				? {
+					width: 0,
+					height: imageRect.height,
+				}
+				: {
+					width: imageRect.width,
+					height: 0,
+				},
+		);
 
-        return {
-          dialogClass: dialogDisplay,
-          pictureStyle: pictureBox,
-          bodyStyle: bodyBox,
-          innerBodyStyle: bodyBox,
-        };
-      }
-      case OpenStage.Closing: {
-        return {
-          dialogClass: `${transitionClass} ${dialogDisplay}`,
-          pictureClass: `${transitionClass}`,
-          pictureStyle: createBox(imageRect),
-          dialogStyle: computeDialogPosition(),
-          bodyStyle: bodyHiddenBox(),
-          innerBodyStyle: createBox(openState.bodyRect),
-          bodyClass: "overflow-hidden",
-        };
-      }
-      case OpenStage.Closed:
-        return {};
-    }
-  });
+	const classes = createMemo(() => {
+		const openState = openStage();
 
-  createEffect(() => {
-    opened();
+		if (!imageRect) return {};
 
-    const image = fromImage();
-    if (!image) return;
+		switch (openState.stage) {
+			case OpenStage.Opening: {
+				return {
+					dialogStyle: computeDialogPosition(),
+					dialogClass: dialogDisplay,
+					pictureStyle: createBox(imageRect),
+					containerClass: `max-h-none max-w-none`,
+					bodyStyle: bodyHiddenBox(),
+					bodyClass: "overflow-hidden",
+				};
+			}
+			case OpenStage.Opened:
+				const bodyBox = createBox(openState.bodyRect);
+				const pictureBox = createBox(openState.pictureRect);
 
-    imageRect = image!.getBoundingClientRect();
-  });
+				return {
+					dialogClass: `${transitionClass} ${dialogDisplay}`,
+					pictureClass: transitionClass,
+					pictureStyle: pictureBox,
+					bodyStyle: bodyBox,
+					innerBodyStyle: bodyBox,
+					bodyClass: "overflow-hidden",
+				};
+			case OpenStage.PreClosing: {
+				const bodyBox = createBox(openState.bodyRect);
+				const pictureBox = createBox(picture.getBoundingClientRect());
 
-  createEffect(() => {
-    if (opened()) {
-      dialog.showModal();
+				return {
+					dialogClass: dialogDisplay,
+					pictureStyle: pictureBox,
+					bodyStyle: bodyBox,
+					innerBodyStyle: bodyBox,
+				};
+			}
+			case OpenStage.Closing: {
+				return {
+					dialogClass: `${transitionClass} ${dialogDisplay}`,
+					pictureClass: `${transitionClass}`,
+					pictureStyle: createBox(imageRect),
+					dialogStyle: computeDialogPosition(),
+					bodyStyle: bodyHiddenBox(),
+					innerBodyStyle: createBox(openState.bodyRect),
+					bodyClass: "overflow-hidden",
+				};
+			}
+			case OpenStage.Closed:
+				return {};
+		}
+	});
 
-      const bodyRect = body.getBoundingClientRect();
-      const pictureRect = picture.getBoundingClientRect();
+	createEffect(() => {
+		opened();
 
-      setOpenStage({
-        stage: OpenStage.Opening,
-        pictureRect,
-      });
+		const image = fromImage();
+		if (!image) return;
 
-      createTimeout(() => {
-        setOpenStage({
-          stage: OpenStage.Opened,
-          bodyRect,
-          pictureRect,
-        });
-      }, OPENING_DURATION);
+		imageRect = image!.getBoundingClientRect();
+	});
 
-      return;
-    }
+	createEffect(() => {
+		if (opened()) {
+			dialog.showModal();
 
-    const bodyRect = body.getBoundingClientRect();
+			const bodyRect = body.getBoundingClientRect();
+			const pictureRect = picture.getBoundingClientRect();
 
-    setOpenStage({
-      stage: OpenStage.PreClosing,
-      bodyRect,
-    });
+			setOpenStage({
+				stage: OpenStage.Opening,
+				pictureRect,
+			});
 
-    createTimeout(() => {
-      setOpenStage({
-        stage: OpenStage.Closing,
-        bodyRect,
-      });
-    }, 0);
+			createTimeout(() => {
+				setOpenStage({
+					stage: OpenStage.Opened,
+					bodyRect,
+					pictureRect,
+				});
+			}, OPENING_DURATION);
 
-    createTimeout(() => {
-      setOpenStage({
-        stage: OpenStage.Closed,
-      });
-      dialog.close();
-    }, OPENING_DURATION);
-  });
+			return;
+		}
 
-  return (
-    <dialog
-      ref={(e) => (dialog = e)}
-      onClick={onClick}
-      class={`fixed inset-0 bg-gray-800 rounded-lg overflow-hidden backdrop:bg-black/50 backdrop:backdrop-blur-md 
+		const bodyRect = body.getBoundingClientRect();
+
+		setOpenStage({
+			stage: OpenStage.PreClosing,
+			bodyRect,
+		});
+
+		createTimeout(() => {
+			setOpenStage({
+				stage: OpenStage.Closing,
+				bodyRect,
+			});
+		}, 0);
+
+		createTimeout(() => {
+			setOpenStage({
+				stage: OpenStage.Closed,
+			});
+			dialog.close();
+		}, OPENING_DURATION);
+	});
+
+	return (
+		<dialog
+			ref={(e) => (dialog = e)}
+			onClick={onClick}
+			class={`fixed inset-0 bg-gray-800 rounded-lg overflow-hidden backdrop:bg-black/50 backdrop:backdrop-blur-md 
 	${classes().dialogClass}`}
-      style={classes().dialogStyle}
-    >
-      <div
-        ref={(e) => (container = e)}
-        class={`${containerClass} flex ${dialogAxis === DialogAxis.Vertical ? "flex-col" : "flex-row"}`}
-      >
-        <picture
-          style={classes().pictureStyle}
-          ref={(e) => (picture = e)}
-          class={`[&>*]:h-full [&>*]:w-full [&>*]:object-cover max-w-full max-h-full 
-${classes().pictureClass} ${dialogAxis === DialogAxis.Vertical ? "w-[9999px] h-auto" : "h-[9999px] w-auto"}`}
-        >
-          {image}
-        </picture>
+			style={classes().dialogStyle}
+		>
+			<div
+				ref={(e) => (container = e)}
+				class={`${containerClass} flex ${dialogAxis() === DialogAxis.Vertical ? "flex-col" : "flex-row"}`}
+			>
+				<picture
+					style={classes().pictureStyle}
+					ref={(e) => (picture = e)}
+					class={`[&>*]:h-full [&>*]:w-full [&>*]:object-cover max-w-full max-h-full 
+									${classes().pictureClass} ${dialogAxis() === DialogAxis.Vertical ? "w-[9999px] h-auto" : "w-auto"}`}
+				>
+					{image}
+				</picture>
 
-        <div
-          class={`${transitionClass} ${classes().bodyClass}`}
-          ref={(e) => (body = e)}
-          style={classes().bodyStyle}
-        >
-          <div class="p-4 w-full h-full" style={classes().innerBodyStyle}>
-            {children}
-          </div>
-        </div>
-      </div>
-    </dialog>
-  );
+				<div
+					class={`${transitionClass} ${classes().bodyClass}`}
+					ref={(e) => (body = e)}
+					style={classes().bodyStyle}
+				>
+					<div class="p-4 w-full h-full" style={classes().innerBodyStyle}>
+						{children}
+					</div>
+				</div>
+			</div>
+		</dialog>
+	);
 }
 
 const computeTargetAxis = (
-  currentWidth: number,
-  currentX: number,
-  targetWidth: number,
+	currentWidth: number,
+	currentX: number,
+	targetWidth: number,
 ) => (currentWidth - targetWidth) / 2 + currentX;
 
 function createBox({ width, height }: Pick<DOMRect, "width" | "height">) {
-  return `width: ${width}px; height: ${height}px`;
+	return `width: ${width}px; height: ${height}px`;
 }
