@@ -4,6 +4,7 @@ import {
 	createMemo,
 	createSignal,
 	onMount,
+	untrack,
 	type Accessor,
 	type JSX,
 	type Setter,
@@ -94,7 +95,6 @@ export default function EmergentDialog({
 
 	onMount(() => {
 		if (openMode === DialogOpenMode.MainlyHorizontal) {
-			console.log("createMainlyHorizontal")
 			createMainlyHorizontal(setDialogAxis)
 			return
 		}
@@ -220,40 +220,36 @@ export default function EmergentDialog({
 		const image = fromImage();
 		if (!image) return;
 
-		imageRect = image!.getBoundingClientRect();
+		imageRect = image.getBoundingClientRect();
 	});
 
-	createEffect(() => {
-		if (opened()) {
-			dialog.showModal();
+	const startOpen = () => {
+		dialog.showModal();
 
-			const bodyRect = body.getBoundingClientRect();
-			const pictureRect = picture.getBoundingClientRect();
+		const bodyRect = body.getBoundingClientRect();
+		const pictureRect = picture.getBoundingClientRect();
 
+		setOpenStage({
+			stage: OpenStage.PreOpening,
+			bodyRect,
+		});
+
+		createTimeout(() => {
 			setOpenStage({
-				stage: OpenStage.PreOpening,
+				stage: OpenStage.Opening,
 				bodyRect,
+				pictureRect,
 			});
+		}, 0);
 
-			createTimeout(() => {
-				setOpenStage({
-					stage: OpenStage.Opening,
-					bodyRect,
-					pictureRect,
-				});
-			}, 0);
+		createTimeout(() => {
+			setOpenStage({
+				stage: OpenStage.Opened,
+			});
+		}, OPENING_DURATION);
+	}
 
-			createTimeout(() => {
-				setOpenStage({
-					stage: OpenStage.Opened,
-					bodyRect,
-					pictureRect,
-				});
-			}, OPENING_DURATION);
-
-			return;
-		}
-
+	const startClose = () => {
 		const bodyRect = body.getBoundingClientRect();
 
 		setOpenStage({
@@ -274,6 +270,19 @@ export default function EmergentDialog({
 			});
 			dialog.close();
 		}, OPENING_DURATION);
+	}
+
+	createEffect(() => {
+		const { stage: currentStage } = untrack(openStage);
+		if (opened() && currentStage === OpenStage.Closed) {
+			startOpen();
+			return
+		}
+
+		if (!opened() && currentStage === OpenStage.Opened) {
+			startClose();
+			return
+		}
 	});
 
 	return (
