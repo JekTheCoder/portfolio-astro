@@ -56,6 +56,11 @@ const createMainlyHorizontal = (setter: Setter<DialogAxis>) => {
 	});
 }
 
+function round(n: number, digits: number) {
+	const mod = 10 ** digits;
+	return Math.round(n * mod) / mod;
+}
+
 export const enum DialogOpenMode {
 	Horizontal,
 	Vertical,
@@ -67,7 +72,7 @@ export const enum DialogAxis {
 	Vertical,
 }
 
-const OPENING_DURATION = 200;
+const OPENING_DURATION = 500;
 
 export default function EmergentDialog({
 	opened,
@@ -133,10 +138,13 @@ export default function EmergentDialog({
 			imageRect.height,
 		);
 
-		return `transform: translate(${imageRect.x - targetX}px, ${imageRect.top - targetY}px)`;
+		const xDelta = round(imageRect.x - targetX, 4);
+		const yDelta = round(imageRect.y - targetY, 4);
+
+		return `transform: translate(${xDelta}px, ${yDelta}px);`;
 	};
 
-	const transitionClass = "transition-all duration-200 ease-in-out";
+	const transitionClass = "transition-all duration-500 ease-in-out";
 	const dialogDisplay = "grid grid-rows-[minmax(0,1fr)]";
 
 	const bodyHiddenBox = () =>
@@ -240,7 +248,7 @@ export default function EmergentDialog({
 				bodyRect,
 				pictureRect,
 			});
-		}, 0);
+		}, /*  wait for more than 0 to prevent race conditions when applying transform */10);
 
 		createTimeout(() => {
 			setOpenStage({
