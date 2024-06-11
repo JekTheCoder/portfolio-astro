@@ -72,7 +72,7 @@ export const enum DialogAxis {
 	Vertical,
 }
 
-const OPENING_DURATION = 500;
+const TRANSITION_DURATION = 500;
 
 export default function EmergentDialog({
 	opened,
@@ -231,6 +231,8 @@ export default function EmergentDialog({
 		imageRect = image.getBoundingClientRect();
 	});
 
+	const transitionRunner = new TaskRunner();
+
 	const startOpen = () => {
 		dialog.showModal();
 
@@ -242,42 +244,42 @@ export default function EmergentDialog({
 			bodyRect,
 		});
 
-		createTimeout(() => {
+		transitionRunner.runTask(async (delay) => {
+			/*  wait for more than 0 to prevent race conditions when applying transform */
+			await delay(10);
 			setOpenStage({
 				stage: OpenStage.Opening,
 				bodyRect,
 				pictureRect,
 			});
-		}, /*  wait for more than 0 to prevent race conditions when applying transform */10);
 
-		createTimeout(() => {
+			await delay(TRANSITION_DURATION);
 			setOpenStage({
 				stage: OpenStage.Opened,
 			});
-		}, OPENING_DURATION);
+		});
 	}
 
 	const startClose = () => {
 		const bodyRect = body.getBoundingClientRect();
-
 		setOpenStage({
 			stage: OpenStage.PreClosing,
 			bodyRect,
 		});
 
-		createTimeout(() => {
+		transitionRunner.runTask(async (delay) => {
+			await delay(0);
 			setOpenStage({
 				stage: OpenStage.Closing,
 				bodyRect,
 			});
-		}, 0);
 
-		createTimeout(() => {
+			await delay(TRANSITION_DURATION);
 			setOpenStage({
 				stage: OpenStage.Closed,
 			});
 			dialog.close();
-		}, OPENING_DURATION);
+		});
 	}
 
 	createEffect(() => {
@@ -287,7 +289,7 @@ export default function EmergentDialog({
 			return
 		}
 
-		if (!opened() && currentStage === OpenStage.Opened) {
+		if (!opened() && currentStage !== OpenStage.Closed) {
 			startClose();
 			return
 		}
@@ -336,4 +338,30 @@ const computeTargetAxis = (
 
 function createBox({ width, height }: Pick<DOMRect, "width" | "height">) {
 	return `width: ${width}px; height: ${height}px`;
+}
+
+type DelayFn = (ms: number) => Promise<void>;
+
+class TaskRunner {
+	#timeouts: number[] = [];
+	#delay: DelayFn = (ms) => new Promise((resolve) => {
+		const timeout = setTimeout(resolve, ms);
+		this.#timeouts.push(timeout);
+	});
+
+	/**
+	* cancels the current task and runs a new one
+	*/
+	runTask(factory: (delay: DelayFn) => Promise<void>) {
+		this.abort()
+		factory(this.#delay);
+	}
+
+	/**
+	* cancels the current task
+	*/
+	abort() {
+		this.#timeouts.forEach(clearTimeout);
+		this.#timeouts = [];
+	}
 }
