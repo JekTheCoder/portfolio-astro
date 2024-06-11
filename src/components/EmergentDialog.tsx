@@ -51,7 +51,6 @@ const createMainlyHorizontal = (setter: Setter<DialogAxis>) => {
 	setter(match.matches ? DialogAxis.Vertical : DialogAxis.Horizontal);
 
 	match.addEventListener("change", (e) => {
-		console.log('match')
 		setter(e.matches ? DialogAxis.Vertical : DialogAxis.Horizontal);
 	});
 }
@@ -159,6 +158,11 @@ export default function EmergentDialog({
 				},
 		);
 
+	const lastOpenProps = {
+		dialogStyle: '',
+		pictureStyle: '',
+		innerBodyStyle: '',
+	}
 	const classes = createMemo(() => {
 		const openState = openStage();
 
@@ -166,11 +170,15 @@ export default function EmergentDialog({
 
 		switch (openState.stage) {
 			case OpenStage.PreOpening: {
+				lastOpenProps.dialogStyle = computeDialogPosition();
+				lastOpenProps.pictureStyle = createBox(imageRect);
+				lastOpenProps.innerBodyStyle = createBox(openState.bodyRect);
+
 				return {
-					pictureStyle: createBox(imageRect),
-					dialogStyle: computeDialogPosition(),
+					pictureStyle: lastOpenProps.pictureStyle,
+					dialogStyle: lastOpenProps.dialogStyle,
+					innerBodyStyle: lastOpenProps.innerBodyStyle,
 					bodyStyle: bodyHiddenBox(),
-					innerBodyStyle: createBox(openState.bodyRect),
 					bodyClass: "overflow-hidden",
 				};
 			}
@@ -205,12 +213,12 @@ export default function EmergentDialog({
 			}
 			case OpenStage.Closing: {
 				return {
-					dialogClass: transitionClass,
+					dialogStyle: lastOpenProps.dialogStyle || computeDialogPosition(),
+					pictureStyle: lastOpenProps.pictureStyle || createBox(imageRect),
+					innerBodyStyle: lastOpenProps.innerBodyStyle || createBox(openState.bodyRect),
 					pictureClass: transitionClass,
-					pictureStyle: createBox(imageRect),
-					dialogStyle: computeDialogPosition(),
+					dialogClass: transitionClass,
 					bodyStyle: bodyHiddenBox(),
-					innerBodyStyle: createBox(openState.bodyRect),
 					bodyClass: "overflow-hidden",
 				};
 			}
