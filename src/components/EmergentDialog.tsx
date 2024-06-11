@@ -145,7 +145,6 @@ export default function EmergentDialog({
 	};
 
 	const transitionClass = "transition-all duration-500 ease-in-out";
-	const dialogDisplay = "grid grid-rows-[minmax(0,1fr)]";
 
 	const bodyHiddenBox = () =>
 		createBox(
@@ -168,7 +167,6 @@ export default function EmergentDialog({
 		switch (openState.stage) {
 			case OpenStage.PreOpening: {
 				return {
-					dialogClass: dialogDisplay,
 					pictureStyle: createBox(imageRect),
 					dialogStyle: computeDialogPosition(),
 					bodyStyle: bodyHiddenBox(),
@@ -182,7 +180,7 @@ export default function EmergentDialog({
 				const pictureBox = createBox(openState.pictureRect);
 
 				return {
-					dialogClass: `${transitionClass} ${dialogDisplay}`,
+					dialogClass: transitionClass,
 					pictureClass: transitionClass,
 					pictureStyle: pictureBox,
 					bodyStyle: bodyBox,
@@ -200,7 +198,6 @@ export default function EmergentDialog({
 				const pictureBox = createBox(picture.getBoundingClientRect());
 
 				return {
-					dialogClass: dialogDisplay,
 					pictureStyle: pictureBox,
 					bodyStyle: bodyBox,
 					innerBodyStyle: bodyBox,
@@ -208,8 +205,8 @@ export default function EmergentDialog({
 			}
 			case OpenStage.Closing: {
 				return {
-					dialogClass: `${transitionClass} ${dialogDisplay}`,
-					pictureClass: `${transitionClass}`,
+					dialogClass: transitionClass,
+					pictureClass: transitionClass,
 					pictureStyle: createBox(imageRect),
 					dialogStyle: computeDialogPosition(),
 					bodyStyle: bodyHiddenBox(),
