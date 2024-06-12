@@ -273,7 +273,7 @@ export default function EmergentDialog({
 		});
 
 		transitionRunner.runTask(async (delay) => {
-			await delay(0);
+			await delay(10);
 			setOpenStage({
 				stage: OpenStage.Closing,
 				bodyRect,
@@ -285,6 +285,7 @@ export default function EmergentDialog({
 			});
 			dialog.close();
 		});
+
 	}
 
 	createEffect(() => {
