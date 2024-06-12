@@ -1,4 +1,3 @@
-import { createTimeout } from "@/lib/solid";
 import {
 	createEffect,
 	createMemo,

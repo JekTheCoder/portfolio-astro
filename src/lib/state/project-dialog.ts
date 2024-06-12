@@ -4,3 +4,5 @@ export const [projectDialog, setProjectDialog] = createSignal<{
   id: string;
   image: Element;
 } | null>(null);
+
+export const closeDialog = () => setProjectDialog(null);

@@ -1,4 +1,5 @@
 ---
+import CloseDialogButton from "@/components/CloseDialogButton.tsx";
 import type { ProjectInfo } from "@/lib/const/projects";
 import ExternalLink from "./ExternalLink.astro";
 import ProjectMarkdown from "./ProjectMarkdown.astro";
@@ -15,82 +16,85 @@ import WWWIcon from "@/public/icons/www.svg?raw";
 import Svg from "./Svg.astro";
 
 const props: Record<
-  string,
-  {
-    markdown: typeof import("*.md");
-  }
+	string,
+	{
+		markdown: typeof import("*.md");
+	}
 > = {
-  stopify: {
-    markdown: StopifyMD,
-  },
-  cco: {
-    markdown: CcoMD,
-  },
-  catstagram: {
-    markdown: CatstagramMD,
-  },
-  "term-chess": {
-    markdown: TermChessMD,
-  },
-  blog: {
-    markdown: BlogMD,
-  },
+	stopify: {
+		markdown: StopifyMD,
+	},
+	cco: {
+		markdown: CcoMD,
+	},
+	catstagram: {
+		markdown: CatstagramMD,
+	},
+	"term-chess": {
+		markdown: TermChessMD,
+	},
+	blog: {
+		markdown: BlogMD,
+	},
 };
 
 interface Props {
-  project: ProjectInfo;
-  contentClass?: string;
+	project: ProjectInfo;
+	contentClass?: string;
 }
 
 const { project, contentClass } = Astro.props;
 ---
 
-<h3 class="text-2xl text-bold mb-4">{project.name}</h3>
+<div class="flex gap-x-2 mb-4">
+	<h3 class="text-2xl text-bold flex-1 overflow-hidden text-ellipsis">{project.name}</h3>
+	<CloseDialogButton client:load />
+</div>
 
 <ul class="flex flex-wrap gap-1 mb-2">
-  {
-    project.technologies.map((tech) => (
-      <li>
-        <TechMark tech={tech} />
-      </li>
-    ))
-  }
+	{
+		project.technologies.map((tech) => (
+			<li>
+				<TechMark tech={tech} />
+			</li>
+		))
+	}
 </ul>
 
 <div class="flex gap-x-2 mb-2">
-  {
-    project.repository && (
-      <ExternalLink href={project.repository}>
-        <div class="w-3 h-3">
-          <Svg svg={GithubIcon} />
-        </div>
-        Repository
-      </ExternalLink>
-    )
-  }
+	{
+		project.repository && (
+			<ExternalLink href={project.repository}>
+				<div class="w-3 h-3">
+					<Svg svg={GithubIcon} />
+				</div>
+				Repository
+			</ExternalLink>
+		)
+	}
 
-  {
-    project.repositories &&
-      project.repositories.map((repo) => (
-        <ExternalLink href={repo.url}>
-          <div class="w-3 h-3">
-            <Svg svg={GithubIcon} />
-          </div>
-          {repo.label}
-        </ExternalLink>
-      ))
-  }
+	{
+		project.repositories &&
+			project.repositories.map((repo) => (
+				<ExternalLink href={repo.url}>
+					<div class="w-3 h-3">
+						<Svg svg={GithubIcon} />
+					</div>
+					{repo.label}
+				</ExternalLink>
+			))
+	}
 
-  {
-    project.website && (
-      <ExternalLink href={project.website}>
-        <div class="w-3 h-3">
-          <Svg svg={WWWIcon} />
-        </div>
-        Website
-      </ExternalLink>
-    )
-  }
+	{
+		project.website && (
+			<ExternalLink href={project.website}>
+				<div class="w-3 h-3">
+					<Svg svg={WWWIcon} />
+				</div>
+				Website
+			</ExternalLink>
+		)
+	}
 </div>
 
 <ProjectMarkdown markdown={props[project.id].markdown} class={contentClass} />
