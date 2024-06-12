@@ -44,6 +44,7 @@ import Toast from "@/components/Toast.tsx";
 <style>
   :root {
     color-scheme: light dark;
+		--header-height: theme('height.16');
   }
 
   html {
@@ -53,6 +54,6 @@ import Toast from "@/components/Toast.tsx";
 
 <style is:global>
   [id] {
-    scroll-margin-top: 60px;
+    scroll-margin-top: calc(var(--header-height) + 1rem);
   }
 </style>
