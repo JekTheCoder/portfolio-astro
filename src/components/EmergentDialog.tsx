@@ -37,7 +37,6 @@ type OpenState =
 	}
 	| {
 		stage: OpenStage.Closing;
-		bodyRect: DOMRect;
 	}
 	| {
 		stage: OpenStage.Closed;
@@ -208,13 +207,14 @@ export default function EmergentDialog({
 					pictureStyle: pictureBox,
 					bodyStyle: bodyBox,
 					innerBodyStyle: bodyBox,
+					dialogStyle: createBox(dialog.getBoundingClientRect()),
 				};
 			}
 			case OpenStage.Closing: {
 				return {
-					dialogStyle: lastOpenProps.dialogStyle || computeDialogPosition(),
-					pictureStyle: lastOpenProps.pictureStyle || createBox(imageRect),
-					innerBodyStyle: lastOpenProps.innerBodyStyle || createBox(openState.bodyRect),
+					dialogStyle: lastOpenProps.dialogStyle,
+					pictureStyle: lastOpenProps.pictureStyle,
+					innerBodyStyle: lastOpenProps.innerBodyStyle,
 					pictureClass: transitionClass,
 					dialogClass: transitionClass,
 					bodyStyle: bodyHiddenBox(),
