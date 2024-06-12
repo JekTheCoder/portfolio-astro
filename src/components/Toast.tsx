@@ -17,7 +17,7 @@ export default function Toast() {
 
   return (
     <div
-      class={`fixed bottom-4 right-1/2 left-1/2 bg-zinc-900 rounded-lg px-2 w-max transition-transform ease-in-out ${show() ? "translate-y-0" : "translate-y-10"}`}
+      class={`fixed bottom-4 right-0 left-0 m-auto bg-zinc-900 rounded-lg px-2 w-max transition-transform ease-in-out ${show() ? "translate-y-0" : "translate-y-10"}`}
     >
       {toast()}
     </div>
