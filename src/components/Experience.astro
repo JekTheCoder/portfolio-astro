@@ -1,89 +1,128 @@
 ---
-import BentoBox from "./BentoBox.astro";
-import ProjectButton from "./ProjectButton.tsx";
-import ProjectDialogs from "./ProjectDialogs.astro";
-import TechMark from "./TechMark.astro";
-import { PROJECTS } from "@/lib/const/projects";
-import ProjectMedia from "./ProjectMedia.tsx";
+import TimelineList from "@/components/timeline/TimelineList.astro";
+import TimelineItem from "@/components/timeline/TimelineItem.astro";
+import TimelineItemTitle from "@/components/timeline/TimelineItemTitle.astro";
+import TimeRange from "@/components/timeline/TimeRange.astro";
+import TechMark from "@/components/TechMark.astro";
 
-const stylesClass: Record<string, { containerClass: string }> = {
-  stopify: {
-    containerClass: "flex-col-reverse",
-  },
-  cco: {
-    containerClass: "flex-col-reverse",
-  },
-  catstagram: {
-    containerClass: "flex-col",
-  },
-  "term-chess": {
-    containerClass: "flex-col-reverse",
-  },
-  blog: {
-    containerClass: "flex-col",
-  },
+const company = {
+	name: "ATIRPAY Solutions",
+	url: "https://atirpay.com",
 };
+
+const timeline = [
+	{
+		jobTitle: "FullStack Jr. Developer",
+		company,
+		description: `Served as the lead developer for both backend and frontend of multiple highly interactive applications. Effectively managed timelines and personnel, organizing tasks efficiently to significantly enhance productivity.`,
+		time: "March 2023 - April 2024",
+		technologies: ["angular", ".net", "mssql"],
+		projects: [
+			"Business Management System: https://enneto.com/",
+			"Environmental Risk Calculator",
+			"Survey Creation and Management Application",
+			"Survey Filling Application",
+		],
+		achivements: [
+			{
+				key: "Angular Migration",
+				description:
+					"Successfully migrated an Angular application from version 14 to 16, ensuring compatibility and leveraging new features for improved performance.",
+			},
+			{
+				key: "Behavior and Functionality Abstraction",
+				description:
+					"Abstracted and normalized key functionalities such as paginated tables, forms, loading states, and message notifications, improving code maintainability and reuse.",
+			},
+			{
+				key: "Backend Development",
+				description:
+					"Created multiple backend servers using .NET 7, implementing robust and scalable solutions.",
+			},
+			{
+				key: "Roles and Permissions System",
+				description:
+					"Developed a customized system for managing roles and permissions, enhancing application security and user management.",
+			},
+		],
+	},
+	{
+		jobTitle: "Angular Jr. Developer",
+		company,
+		description: `Developed new features and implemented modifications to existing ones. Identified and resolved performance issues. Took initiative to standardize critical elements of the main application, including forms, paginated tables, loading states, and error reporting. Achieved significant enhancements in user experience. Successfully created several client-only web applications from scratch`,
+		achivements: [
+			{
+				key: "Performance Optimization",
+				description:
+					"Identified and resolved performance issues within an Angular project, significantly enhancing the application's efficiency and user experience.",
+			},
+		],
+		time: "September 2022",
+	},
+];
 ---
 
-<ul class="grid gap-2 bento-layout lg:h-[600px]">
-  {
-    PROJECTS.map((project) => (
-      <li style={`grid-area: ${project.id}`} class="grid">
-        <ProjectButton client:load projectId={project.id}>
-          <BentoBox class="w-full h-full">
-            <div class={`flex ${stylesClass[project.id]?.containerClass}`}>
-              <div class="header mb-5">
-                <h3 class="text-xl font-medium mb-2">{project.name}</h3>
+<section id="experience" class="bg-gray-800 px-4 py-12 mb-12">
+	<div class="container mx-auto">
+		<h2 class="text-bold font-medium text-4xl mb-6">Laboral Experience</h2>
 
-                <ul class="flex flex-wrap gap-2">
-                  {project.technologies.map((tech) => (
-                    <li>
-                      <TechMark tech={tech} />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <picture class="block overflow-hidden flex-1">
-                <ProjectMedia
-                  {...project}
-                  class="group-hover:scale-110 transition-all duration-300 w-full h-full object-cover"
-                />
-              </picture>
-            </div>
-          </BentoBox>
-        </ProjectButton>
-      </li>
-    ))
-  }
+		<TimelineList>
+			{
+				timeline.map((item) => (
+					<TimelineItem>
+						<TimeRange time={item.time} />
 
-  <li class="hidden lg:block bg-gray-900 rounded-lg [grid-area:none] m-1"></li>
-</ul>
+						<TimelineItemTitle>
+							<span class="text-cyan-400">{item.jobTitle}</span>
 
-<ProjectDialogs />
+							<span class="">&#8226;</span>
 
-<style>
-  .header {
-    @apply text-left p-2 mb-px shadow-[0_3px_10px_rgb(0,0,0,0.2)];
-  }
+							<a target="_blank" href={item.company.url}>
+								{item.company.name}
+							</a>
+						</TimelineItemTitle>
 
-  .bento-layout {
-    grid-template-areas:
-      "stopify stopify stopify stopify stopify stopify catstagram catstagram catstagram catstagram"
-      "blog blog blog blog blog cco cco cco cco cco"
-      "blog blog blog blog blog term-chess term-chess term-chess term-chess term-chess";
+						{item.technologies && (
+							<ul class="flex gap-x-2 my-2">
+								{item.technologies.map((tech) => (
+									<li>
+										<TechMark tech={tech} />
+									</li>
+								))}
+							</ul>
+						)}
 
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: 2fr 1fr 1fr;
-  }
+						<p class="my-2 text-base font-normal">{item.description}</p>
 
-  @screen lg {
-    .bento-layout {
-      grid-template-areas:
-        "stopify stopify term-chess cco catstagram"
-        "stopify stopify blog blog catstagram";
+						{item.projects && (
+							<section class="my-2">
+								<h4 class="text-lg font-medium mb-1">Projects</h4>
 
-      grid-template-columns: repeat(5, 1fr);
-      grid-template-rows: repeat(2, minmax(0, 1fr));
-    }
-  }
-</style>
+								<ul class="list-disc list-inside">
+									{item.projects.map((project) => (
+										<li class="text-base font-normal">{project}</li>
+									))}
+								</ul>
+							</section>
+						)}
+
+						{item.achivements && (
+							<section class="my-2">
+								<h4 class="text-lg font-medium mb-1">Achivements</h4>
+
+								<ul class="list-disc list-inside">
+									{item.achivements.map((achivement) => (
+										<li class="text-base font-normal">
+											<strong>{achivement.key}</strong>:&nbsp;
+											{achivement.description}
+										</li>
+									))}
+								</ul>
+							</section>
+						)}
+					</TimelineItem>
+				))
+			}
+		</TimelineList>
+	</div>
+</section>

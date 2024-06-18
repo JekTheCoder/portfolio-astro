@@ -3,71 +3,12 @@ import Document from "../layouts/Document.astro";
 import Badge from "@/components/Badge.astro";
 import Link from "@/components/Link.astro";
 
-import Experience from "@/components/Experience.astro";
+import Projects from "@/components/Projects.astro";
 
-import TimelineList from "@/components/timeline/TimelineList.astro";
-import TimelineItem from "@/components/timeline/TimelineItem.astro";
-import TimelineItemTitle from "@/components/timeline/TimelineItemTitle.astro";
-import TimeRange from "@/components/timeline/TimeRange.astro";
 import About from "@/components/About.astro";
 import Contact from "@/components/Contact.astro";
-import TechMark from "@/components/TechMark.astro";
+import Experience from "@/components/Experience.astro";
 
-const company = {
-	name: "ATIRPAY Solutions",
-	url: "https://atirpay.com",
-};
-
-const timeline = [
-	{
-		jobTitle: "FullStack Jr. Developer",
-		company,
-		description: `Served as the lead developer for both backend and frontend of multiple highly interactive applications. Effectively managed timelines and personnel, organizing tasks efficiently to significantly enhance productivity.`,
-		time: "March 2023 - April 2024",
-		technologies: ["angular", ".net", "mssql"],
-		projects: [
-			"Business Management System: https://enneto.com/",
-			"Environmental Risk Calculator",
-			"Survey Creation and Management Application",
-			"Survey Filling Application",
-		],
-		achivements: [
-			{
-				key: "Angular Migration",
-				description:
-					"Successfully migrated an Angular application from version 14 to 16, ensuring compatibility and leveraging new features for improved performance.",
-			},
-			{
-				key: "Behavior and Functionality Abstraction",
-				description:
-					"Abstracted and normalized key functionalities such as paginated tables, forms, loading states, and message notifications, improving code maintainability and reuse.",
-			},
-			{
-				key: "Backend Development",
-				description:
-					"Created multiple backend servers using .NET 7, implementing robust and scalable solutions.",
-			},
-			{
-				key: "Roles and Permissions System",
-				description:
-					"Developed a customized system for managing roles and permissions, enhancing application security and user management.",
-			},
-		],
-	},
-	{
-		jobTitle: "Angular Jr. Developer",
-		company,
-		description: `Developed new features and implemented modifications to existing ones. Identified and resolved performance issues. Took initiative to standardize critical elements of the main application, including forms, paginated tables, loading states, and error reporting. Achieved significant enhancements in user experience. Successfully created several client-only web applications from scratch`,
-		achivements: [
-			{
-				key: "Performance Optimization",
-				description:
-					"Identified and resolved performance issues within an Angular project, significantly enhancing the application's efficiency and user experience.",
-			},
-		],
-		time: "September 2022",
-	},
-];
 ---
 
 <style>
@@ -119,75 +60,12 @@ const timeline = [
 		</div>
 	</section>
 
-	<section id="experience" class="bg-gray-800 px-4 py-12 mb-12">
-		<div class="container mx-auto">
-			<h2 class="text-bold font-medium text-4xl mb-6">Laboral Experience</h2>
+	<Experience />
 
-			<TimelineList>
-				{
-					timeline.map((item) => (
-						<TimelineItem>
-							<TimeRange time={item.time} />
-
-							<TimelineItemTitle>
-								<span class="text-cyan-400">{item.jobTitle}</span>
-
-								<span class="">&#8226;</span>
-
-								<a target="_blank" href={item.company.url}>
-									{item.company.name}
-								</a>
-							</TimelineItemTitle>
-
-							{item.technologies && (
-								<ul class="flex gap-x-2 my-2">
-									{item.technologies.map((tech) => (
-										<li>
-											<TechMark tech={tech} />
-										</li>
-									))}
-								</ul>
-							)}
-
-							<p class="my-2 text-base font-normal">{item.description}</p>
-
-							{item.projects && (
-								<section class="my-2">
-									<h4 class="text-lg font-medium mb-1">Projects</h4>
-
-									<ul class="list-disc list-inside">
-										{item.projects.map((project) => (
-											<li class="text-base font-normal">{project}</li>
-										))}
-									</ul>
-								</section>
-							)}
-
-							{item.achivements && (
-								<section class="my-2">
-									<h4 class="text-lg font-medium mb-1">Achivements</h4>
-
-									<ul class="list-disc list-inside">
-										{item.achivements.map((achivement) => (
-											<li class="text-base font-normal">
-												<strong>{achivement.key}</strong>:&nbsp;
-												{achivement.description}
-											</li>
-										))}
-									</ul>
-								</section>
-							)}
-						</TimelineItem>
-					))
-				}
-			</TimelineList>
-		</div>
-	</section>
-
-	<section id="projects" class="max-w-3xl lg:container mx-auto my-5 mb-12 px-2">
+	<section id="projects" class="w-full max-w-3xl lg:w-auto lg:container mx-auto my-5 mb-12 lg:px-2">
 		<h2 class="text-bold font-medium text-4xl mb-6">Projects</h2>
 
-		<Experience />
+		<Projects />
 	</section>
 
 	<About />

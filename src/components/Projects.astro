@@ -1,0 +1,89 @@
+---
+import BentoBox from "./BentoBox.astro";
+import ProjectButton from "./ProjectButton.tsx";
+import ProjectDialogs from "./ProjectDialogs.astro";
+import TechMark from "./TechMark.astro";
+import { PROJECTS } from "@/lib/const/projects";
+import ProjectMedia from "./ProjectMedia.tsx";
+
+const stylesClass: Record<string, { containerClass: string }> = {
+  stopify: {
+    containerClass: "flex-col-reverse",
+  },
+  cco: {
+    containerClass: "flex-col-reverse",
+  },
+  catstagram: {
+    containerClass: "flex-col",
+  },
+  "term-chess": {
+    containerClass: "flex-col-reverse",
+  },
+  blog: {
+    containerClass: "flex-col",
+  },
+};
+---
+
+<ul class="grid gap-2 bento-layout lg:h-[600px]">
+  {
+    PROJECTS.map((project) => (
+      <li style={`grid-area: ${project.id}`} class="grid">
+        <ProjectButton client:load projectId={project.id}>
+          <BentoBox class="w-full h-full">
+            <div class={`flex ${stylesClass[project.id]?.containerClass}`}>
+              <div class="header mb-5">
+                <h3 class="text-xl font-medium mb-2">{project.name}</h3>
+
+                <ul class="flex flex-wrap gap-2">
+                  {project.technologies.map((tech) => (
+                    <li>
+                      <TechMark tech={tech} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <picture class="block overflow-hidden flex-1">
+                <ProjectMedia
+                  {...project}
+                  class="group-hover:scale-110 transition-all duration-300 w-full h-full object-cover"
+                />
+              </picture>
+            </div>
+          </BentoBox>
+        </ProjectButton>
+      </li>
+    ))
+  }
+
+  <li class="hidden lg:block bg-gray-900 rounded-lg [grid-area:none] m-1"></li>
+</ul>
+
+<ProjectDialogs />
+
+<style>
+  .header {
+    @apply text-left p-2 mb-px shadow-[0_3px_10px_rgb(0,0,0,0.2)];
+  }
+
+  .bento-layout {
+    grid-template-areas:
+      "stopify stopify stopify stopify stopify stopify catstagram catstagram catstagram catstagram"
+      "blog blog blog blog blog cco cco cco cco cco"
+      "blog blog blog blog blog term-chess term-chess term-chess term-chess term-chess";
+
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: 2fr 1fr 1fr;
+  }
+
+  @screen lg {
+    .bento-layout {
+      grid-template-areas:
+        "stopify stopify term-chess cco catstagram"
+        "stopify stopify blog blog catstagram";
+
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
