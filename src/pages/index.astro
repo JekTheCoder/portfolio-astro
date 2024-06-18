@@ -11,6 +11,7 @@ import TimelineItemTitle from "@/components/timeline/TimelineItemTitle.astro";
 import TimeRange from "@/components/timeline/TimeRange.astro";
 import About from "@/components/About.astro";
 import Contact from "@/components/Contact.astro";
+import TechMark from "@/components/TechMark.astro";
 
 const company = {
 	name: "ATIRPAY Solutions",
@@ -22,12 +23,48 @@ const timeline = [
 		jobTitle: "FullStack Jr. Developer",
 		company,
 		description: `Served as the lead developer for both backend and frontend of multiple highly interactive applications. Effectively managed timelines and personnel, organizing tasks efficiently to significantly enhance productivity.`,
-		time: "March 2023 - Present",
+		time: "March 2023 - April 2024",
+		technologies: ["angular", ".net", "mssql"],
+		projects: [
+			"Business Management System: https://enneto.com/",
+			"Environmental Risk Calculator",
+			"Survey Creation and Management Application",
+			"Survey Filling Application",
+		],
+		achivements: [
+			{
+				key: "Angular Migration",
+				description:
+					"Successfully migrated an Angular application from version 14 to 16, ensuring compatibility and leveraging new features for improved performance.",
+			},
+			{
+				key: "Behavior and Functionality Abstraction",
+				description:
+					"Abstracted and normalized key functionalities such as paginated tables, forms, loading states, and message notifications, improving code maintainability and reuse.",
+			},
+			{
+				key: "Backend Development",
+				description:
+					"Created multiple backend servers using .NET 7, implementing robust and scalable solutions.",
+			},
+			{
+				key: "Roles and Permissions System",
+				description:
+					"Developed a customized system for managing roles and permissions, enhancing application security and user management.",
+			},
+		],
 	},
 	{
 		jobTitle: "Angular Jr. Developer",
 		company,
 		description: `Developed new features and implemented modifications to existing ones. Identified and resolved performance issues. Took initiative to standardize critical elements of the main application, including forms, paginated tables, loading states, and error reporting. Achieved significant enhancements in user experience. Successfully created several client-only web applications from scratch`,
+		achivements: [
+			{
+				key: "Performance Optimization",
+				description:
+					"Identified and resolved performance issues within an Angular project, significantly enhancing the application's efficiency and user experience.",
+			},
+		],
 		time: "September 2022",
 	},
 ];
@@ -102,7 +139,44 @@ const timeline = [
 								</a>
 							</TimelineItemTitle>
 
-							<p class="mb-4 text-base font-normal">{item.description}</p>
+							{item.technologies && (
+								<ul class="flex gap-x-2 my-2">
+									{item.technologies.map((tech) => (
+										<li>
+											<TechMark tech={tech} />
+										</li>
+									))}
+								</ul>
+							)}
+
+							<p class="my-2 text-base font-normal">{item.description}</p>
+
+							{item.projects && (
+								<section class="my-2">
+									<h4 class="text-lg font-medium mb-1">Projects</h4>
+
+									<ul class="list-disc list-inside">
+										{item.projects.map((project) => (
+											<li class="text-base font-normal">{project}</li>
+										))}
+									</ul>
+								</section>
+							)}
+
+							{item.achivements && (
+								<section class="my-2">
+									<h4 class="text-lg font-medium mb-1">Achivements</h4>
+
+									<ul class="list-disc list-inside">
+										{item.achivements.map((achivement) => (
+											<li class="text-base font-normal">
+												<strong>{achivement.key}</strong>:&nbsp;
+												{achivement.description}
+											</li>
+										))}
+									</ul>
+								</section>
+							)}
 						</TimelineItem>
 					))
 				}
