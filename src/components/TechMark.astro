@@ -72,7 +72,7 @@ const techData = (tech: string) => data[tech as keyof typeof data];
 
 	{
 		techData(tech)?.cc40 && (
-			<span class="flex gap-x-1 absolute -top-10 left-0 group-hover:opacity-100 opacity-0 w-max bg-gray-900 text-bold p-2 rounded-md">
+			<span class="gap-x-1 absolute -top-10 left-0 group-hover:flex hidden w-max bg-gray-900 text-bold p-2 rounded-md">
 				<a
 					target="_blank"
 					rel="noopener"
