@@ -1,5 +1,7 @@
 ---
-import Icon from './Icon.tsx'
+import IconTsx from './Icon.tsx'
+
+export type Props = Parameters<typeof IconTsx>[0];
 ---
 
-<Icon client:only="solid" />
+<IconTsx client:only="solid" {...Astro.props} />
